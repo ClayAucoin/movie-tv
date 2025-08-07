@@ -1,0 +1,1002 @@
+[
+    {
+        "title": "\u00a1Three Amigos!",
+        "originalTitle": "\u00a1Three Amigos!",
+        "originalLanguage": {
+            "id": 1,
+            "name": "English"
+        },
+        "alternateTitles": [
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 1,
+                "title": "\u00a1Tres Amigos!",
+                "id": 1
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 1,
+                "title": "\u00a1Tre amigos!",
+                "id": 2
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 1,
+                "title": "The Three Amigos",
+                "id": 3
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 1,
+                "title": "The Three Caballeros",
+                "id": 4
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 1,
+                "title": "\u73fe\u4ee3\u4e09\u528d\u4fe0",
+                "id": 5
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 1,
+                "title": "\u6b63\u4e49\u4e09\u5144\u5f1f",
+                "id": 6
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 1,
+                "title": "The 3 Amigos",
+                "id": 19261
+            }
+        ],
+        "secondaryYearSourceId": 0,
+        "sortTitle": "three amigos",
+        "sizeOnDisk": 2032234514,
+        "status": "released",
+        "overview": "A trio of unemployed silent film actors are mistaken for real heroes by a small Mexican village in search of someone to stop a malevolent bandit.",
+        "inCinemas": "1986-12-12T00:00:00Z",
+        "physicalRelease": "1986-12-25T00:00:00Z",
+        "digitalRelease": "2007-08-25T00:00:00Z",
+        "images": [
+            {
+                "coverType": "poster",
+                "url": "/MediaCover/1/poster.jpg?lastWrite=638715358447454345",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/tKcOxhaBpLdvo8lExbz5AgpuGwc.jpg"
+            },
+            {
+                "coverType": "fanart",
+                "url": "/MediaCover/1/fanart.jpg?lastWrite=638535498158504253",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/z7VhtN4xkedXaQPGUevRMK7wo9M.jpg"
+            }
+        ],
+        "website": "",
+        "year": 1986,
+        "youTubeTrailerId": "xgOcejbMuq0",
+        "studio": "L.A. Films",
+        "path": "/media/Movies/\u00a1Three Amigos! (1986)",
+        "qualityProfileId": 1,
+        "hasFile": true,
+        "movieFileId": 2,
+        "monitored": true,
+        "minimumAvailability": "announced",
+        "isAvailable": true,
+        "folderName": "/media/Movies/\u00a1Three Amigos! (1986)",
+        "runtime": 103,
+        "cleanTitle": "threeamigos",
+        "imdbId": "tt0092086",
+        "tmdbId": 8388,
+        "titleSlug": "8388",
+        "rootFolderPath": "/media/Movies/",
+        "certification": "PG",
+        "genres": [
+            "Comedy",
+            "Western"
+        ],
+        "tags": [],
+        "added": "2023-10-06T05:24:18Z",
+        "ratings": {
+            "imdb": {
+                "votes": 87821,
+                "value": 6.5,
+                "type": "user"
+            },
+            "tmdb": {
+                "votes": 1009,
+                "value": 6.303,
+                "type": "user"
+            },
+            "metacritic": {
+                "votes": 0,
+                "value": 52,
+                "type": "user"
+            },
+            "rottenTomatoes": {
+                "votes": 0,
+                "value": 45,
+                "type": "user"
+            }
+        },
+        "movieFile": {
+            "movieId": 1,
+            "relativePath": "\u00a1Three Amigos! (1986).mkv",
+            "path": "/media/Movies/\u00a1Three Amigos! (1986)/\u00a1Three Amigos! (1986).mkv",
+            "size": 2032234514,
+            "dateAdded": "2023-10-06T05:24:24Z",
+            "edition": "",
+            "languages": [
+                {
+                    "id": 1,
+                    "name": "English"
+                }
+            ],
+            "quality": {
+                "quality": {
+                    "id": 3,
+                    "name": "WEBDL-1080p",
+                    "source": "webdl",
+                    "resolution": 1080,
+                    "modifier": "none"
+                },
+                "revision": {
+                    "version": 1,
+                    "real": 0,
+                    "isRepack": false
+                }
+            },
+            "customFormatScore": 0,
+            "indexerFlags": 0,
+            "mediaInfo": {
+                "audioBitrate": 0,
+                "audioChannels": 5.1,
+                "audioCodec": "AAC",
+                "audioLanguages": "eng",
+                "audioStreamCount": 1,
+                "videoBitDepth": 8,
+                "videoBitrate": 0,
+                "videoCodec": "x264",
+                "videoFps": 23.976,
+                "videoDynamicRange": "",
+                "videoDynamicRangeType": "",
+                "resolution": "1920x1024",
+                "runTime": "1:42:46",
+                "scanType": "Progressive",
+                "subtitles": ""
+            },
+            "qualityCutoffNotMet": false,
+            "id": 2
+        },
+        "popularity": 18.302,
+        "statistics": {
+            "movieFileCount": 1,
+            "sizeOnDisk": 2032234514,
+            "releaseGroups": []
+        },
+        "id": 1
+    },
+    {
+        "title": "#UNFIT: The Psychology of Donald Trump",
+        "originalTitle": "#UNFIT: The Psychology of Donald Trump",
+        "originalLanguage": {
+            "id": 1,
+            "name": "English"
+        },
+        "alternateTitles": [
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 2,
+                "title": "#UNFIT: A Psychological Thriller",
+                "id": 7
+            }
+        ],
+        "secondaryYearSourceId": 0,
+        "sortTitle": "unfit psychology donald trump",
+        "sizeOnDisk": 1723376217,
+        "status": "released",
+        "overview": "Medical doctors and mental health professionals go on camera, on the record, for the record, for a discussion, analysis, and science-based examination of the behavior, psyche, condition, and stability of President Donald Trump. Also examines Trump's effect on our citizenry, culture, and institutions.",
+        "inCinemas": "2020-10-22T00:00:00Z",
+        "digitalRelease": "2020-09-01T00:00:00Z",
+        "images": [
+            {
+                "coverType": "poster",
+                "url": "/MediaCover/2/poster.jpg?lastWrite=638321666694072376",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/3DgSiNMiHh1JreAOjWseAO3vyJb.jpg"
+            },
+            {
+                "coverType": "fanart",
+                "url": "/MediaCover/2/fanart.jpg?lastWrite=638380073395078820",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/NlXqUUOiW9Etq8GacF5dOxe36Q.jpg"
+            }
+        ],
+        "website": "https://www.unfitfilm.com",
+        "year": 2020,
+        "youTubeTrailerId": "vWCJoqgkrD4",
+        "studio": "Bronson Park Films",
+        "path": "/media/Movies/#UNFIT The Psychology of Donald Trump (2020)",
+        "qualityProfileId": 1,
+        "hasFile": true,
+        "movieFileId": 3,
+        "monitored": true,
+        "minimumAvailability": "announced",
+        "isAvailable": true,
+        "folderName": "/media/Movies/#UNFIT The Psychology of Donald Trump (2020)",
+        "runtime": 83,
+        "cleanTitle": "unfitpsychologydonaldtrump",
+        "imdbId": "tt12304596",
+        "tmdbId": 581802,
+        "titleSlug": "581802",
+        "rootFolderPath": "/media/Movies/",
+        "genres": [
+            "Documentary"
+        ],
+        "tags": [],
+        "added": "2023-10-06T05:24:18Z",
+        "ratings": {
+            "imdb": {
+                "votes": 3611,
+                "value": 6.9,
+                "type": "user"
+            },
+            "tmdb": {
+                "votes": 37,
+                "value": 6.608,
+                "type": "user"
+            },
+            "rottenTomatoes": {
+                "votes": 0,
+                "value": 81,
+                "type": "user"
+            }
+        },
+        "movieFile": {
+            "movieId": 2,
+            "relativePath": "#UNFIT The Psychology of Donald Trump (2020).mkv",
+            "path": "/media/Movies/#UNFIT The Psychology of Donald Trump (2020)/#UNFIT The Psychology of Donald Trump (2020).mkv",
+            "size": 1723376217,
+            "dateAdded": "2023-10-06T05:24:24Z",
+            "edition": "",
+            "languages": [
+                {
+                    "id": 1,
+                    "name": "English"
+                }
+            ],
+            "quality": {
+                "quality": {
+                    "id": 3,
+                    "name": "WEBDL-1080p",
+                    "source": "webdl",
+                    "resolution": 1080,
+                    "modifier": "none"
+                },
+                "revision": {
+                    "version": 1,
+                    "real": 0,
+                    "isRepack": false
+                }
+            },
+            "customFormatScore": 0,
+            "indexerFlags": 0,
+            "mediaInfo": {
+                "audioBitrate": 0,
+                "audioChannels": 5.1,
+                "audioCodec": "AAC",
+                "audioLanguages": "eng",
+                "audioStreamCount": 1,
+                "videoBitDepth": 8,
+                "videoBitrate": 0,
+                "videoCodec": "x264",
+                "videoFps": 23.976,
+                "videoDynamicRange": "",
+                "videoDynamicRangeType": "",
+                "resolution": "1920x1080",
+                "runTime": "1:24:21",
+                "scanType": "Progressive",
+                "subtitles": ""
+            },
+            "qualityCutoffNotMet": false,
+            "id": 3
+        },
+        "popularity": 1.429,
+        "statistics": {
+            "movieFileCount": 1,
+            "sizeOnDisk": 1723376217,
+            "releaseGroups": []
+        },
+        "id": 2
+    },
+    {
+        "title": "2 Fast 2 Furious",
+        "originalTitle": "2 Fast 2 Furious",
+        "originalLanguage": {
+            "id": 1,
+            "name": "English"
+        },
+        "alternateTitles": [
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Hal\u00e1losabb iramban",
+                "id": 78
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Wild Speed X2",
+                "id": 79
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "B\u016drzi i yarostni 2",
+                "id": 80
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Dvoynoy forsazh",
+                "id": 81
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Podviynyy forsazh",
+                "id": 82
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Prebrzi i pre\u017eestoki",
+                "id": 83
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "+r\u00e1pido +furioso",
+                "id": 84
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Oi Machit\u00e9s ton Dr\u00f3mon 2",
+                "id": 85
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "\u901f\u5ea6\u4e0e\u6fc0\u60c52\uff1a\u98d9\u98ce\u518d\u8d77",
+                "id": 87
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "\u0e40\u0e23\u0e47\u0e27...\u0e41\u0e23\u0e07\u0e17\u0e30\u0e25\u0e38\u0e19\u0e23\u0e01: \u0e40\u0e23\u0e47\u0e27\u0e04\u0e39\u0e13 2 \u0e14\u0e31\u0e1a\u0e40\u0e1a\u0e34\u0e49\u0e25\u0e41\u0e23\u0e07\u0e17\u0e49\u0e32\u0e19\u0e23\u0e01",
+                "id": 88
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Mais Velozes Mais Furiosos",
+                "id": 89
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "\u73a9\u547d\u95dc\u982d2\uff1a\u98c6\u98a8\u518d\u8d77",
+                "id": 90
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "F&F2 - 2 Fast 2 Furious",
+                "id": 91
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Za Szybcy, za W\u015bciekli",
+                "id": 92
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Fast & Furious 2 - 2 Fast 2 Furious",
+                "id": 94
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "\u72c2\u91ce\u6642\u901f2",
+                "id": 95
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "H\u0131zl\u0131 ve \u00d6fkeli 2",
+                "id": 96
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Qu\u00e1 Nhanh Qu\u00e1 Nguy Hi\u1ec3m 2",
+                "id": 97
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "2 Fast 2 Furious: A todo gas 2",
+                "id": 98
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "M\u00e1s r\u00e1pido, m\u00e1s furioso",
+                "id": 99
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "\u041f\u0430\u043a\u043b\u0435\u043d\u0435 \u0443\u043b\u0438\u0446\u0435 2",
+                "id": 100
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Fast & Furious 2",
+                "id": 101
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Forsaj 2",
+                "id": 17873
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "\u30ef\u30a4\u30eb\u30c9\u30fb\u30b9\u30d4\u30fc\u30c9X2\uff1a2003",
+                "id": 18735
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "2 \u05de\u05d4\u05d9\u05e8 2 \u05e2\u05e6\u05d1\u05e0\u05d9",
+                "id": 18789
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "Velozes e Furiosos",
+                "id": 19362
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "The Fast and the Furious II: 2 Fast 2 Furious",
+                "id": 21117
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 11,
+                "title": "A todo gas 2",
+                "id": 22255
+            }
+        ],
+        "secondaryYearSourceId": 0,
+        "sortTitle": "2 fast 2 furious",
+        "sizeOnDisk": 2203077251,
+        "status": "released",
+        "overview": "It's a major double-cross when former police officer Brian O'Conner teams up with his ex-con buddy Roman Pearce to transport a shipment of \"dirty\" money for shady Miami-based import-export dealer Carter Verone. But the guys are actually working with undercover agent Monica Fuentes to bring Verone down.",
+        "inCinemas": "2003-06-05T00:00:00Z",
+        "physicalRelease": "2003-08-29T00:00:00Z",
+        "digitalRelease": "2003-10-23T00:00:00Z",
+        "images": [
+            {
+                "coverType": "poster",
+                "url": "/MediaCover/11/poster.jpg?lastWrite=638647181513555132",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/6nDZExrDKIXvSAghsFKVFRVJuSf.jpg"
+            },
+            {
+                "coverType": "fanart",
+                "url": "/MediaCover/11/fanart.jpg?lastWrite=638717098479406155",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/z3ioibdjWZOYeXjoiabFOFOfPI3.jpg"
+            }
+        ],
+        "website": "https://www.uphe.com/movies/2-fast-2-furious",
+        "year": 2003,
+        "youTubeTrailerId": "fDooSsgINLQ",
+        "studio": "Ardustry Entertainment",
+        "path": "/media/Movies/2 Fast 2 Furious (2003)",
+        "qualityProfileId": 1,
+        "hasFile": true,
+        "movieFileId": 13,
+        "monitored": true,
+        "minimumAvailability": "announced",
+        "isAvailable": true,
+        "folderName": "/media/Movies/2 Fast 2 Furious (2003)",
+        "runtime": 107,
+        "cleanTitle": "2fast2furious",
+        "imdbId": "tt0322259",
+        "tmdbId": 584,
+        "titleSlug": "584",
+        "rootFolderPath": "/media/Movies/",
+        "certification": "PG-13",
+        "genres": [
+            "Action",
+            "Crime",
+            "Thriller"
+        ],
+        "tags": [],
+        "added": "2023-10-06T05:24:18Z",
+        "ratings": {
+            "imdb": {
+                "votes": 307999,
+                "value": 5.9,
+                "type": "user"
+            },
+            "tmdb": {
+                "votes": 7566,
+                "value": 6.5,
+                "type": "user"
+            },
+            "metacritic": {
+                "votes": 0,
+                "value": 38,
+                "type": "user"
+            },
+            "rottenTomatoes": {
+                "votes": 0,
+                "value": 37,
+                "type": "user"
+            }
+        },
+        "movieFile": {
+            "movieId": 11,
+            "relativePath": "2 Fast 2 Furious (2003).mkv",
+            "path": "/media/Movies/2 Fast 2 Furious (2003)/2 Fast 2 Furious (2003).mkv",
+            "size": 2203077251,
+            "dateAdded": "2023-10-06T05:24:27Z",
+            "edition": "",
+            "languages": [
+                {
+                    "id": 1,
+                    "name": "English"
+                }
+            ],
+            "quality": {
+                "quality": {
+                    "id": 3,
+                    "name": "WEBDL-1080p",
+                    "source": "webdl",
+                    "resolution": 1080,
+                    "modifier": "none"
+                },
+                "revision": {
+                    "version": 1,
+                    "real": 0,
+                    "isRepack": false
+                }
+            },
+            "customFormatScore": 0,
+            "indexerFlags": 0,
+            "mediaInfo": {
+                "audioBitrate": 0,
+                "audioChannels": 5.1,
+                "audioCodec": "AAC",
+                "audioLanguages": "eng",
+                "audioStreamCount": 1,
+                "videoBitDepth": 8,
+                "videoBitrate": 0,
+                "videoCodec": "x264",
+                "videoFps": 23.976,
+                "videoDynamicRange": "",
+                "videoDynamicRangeType": "",
+                "resolution": "1920x816",
+                "runTime": "1:47:41",
+                "scanType": "Progressive",
+                "subtitles": ""
+            },
+            "qualityCutoffNotMet": false,
+            "id": 13
+        },
+        "collection": {
+            "title": "The Fast and the Furious Collection",
+            "tmdbId": 9485
+        },
+        "popularity": 3.424,
+        "statistics": {
+            "movieFileCount": 1,
+            "sizeOnDisk": 2203077251,
+            "releaseGroups": []
+        },
+        "id": 11
+    },
+    {
+        "title": "2 Guns",
+        "originalTitle": "2 Guns",
+        "originalLanguage": {
+            "id": 1,
+            "name": "English"
+        },
+        "alternateTitles": [
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "\u5b56GUN\u53cc\u96c4",
+                "id": 62
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "Dva stvola",
+                "id": 63
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "Two Guns",
+                "id": 64
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "Rana\u0159i",
+                "id": 65
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "2 Guns - Cani sciolti",
+                "id": 66
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "2 Tiros",
+                "id": 67
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "\ud22c \uac74\uc988",
+                "id": 68
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "Armados y peligrosos",
+                "id": 69
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 12,
+                "title": "\u0414\u0432\u0430 \u0441\u0442\u0432\u043e\u043b\u0430",
+                "id": 70
+            }
+        ],
+        "secondaryYearSourceId": 0,
+        "sortTitle": "2 guns",
+        "sizeOnDisk": 2233435101,
+        "status": "released",
+        "overview": "A DEA agent and an undercover Naval Intelligence officer who have been tasked with investigating one another find they have been set up by the mob -- the very organization the two men believe they have been stealing money from.",
+        "inCinemas": "2013-08-02T00:00:00Z",
+        "physicalRelease": "2013-11-19T00:00:00Z",
+        "digitalRelease": "2013-08-07T00:00:00Z",
+        "images": [
+            {
+                "coverType": "poster",
+                "url": "/MediaCover/12/poster.jpg?lastWrite=638390531287133085",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/ptURGAFktibhk7DEAbMazlmNqWa.jpg"
+            },
+            {
+                "coverType": "fanart",
+                "url": "/MediaCover/12/fanart.jpg?lastWrite=638717098589096805",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/swyPgOP2lffHfMjeZKNnNFR9P88.jpg"
+            }
+        ],
+        "website": "",
+        "year": 2013,
+        "youTubeTrailerId": "AK6EbfdnTHg",
+        "studio": "Universal Pictures",
+        "path": "/media/Movies/2 Guns (2013)",
+        "qualityProfileId": 1,
+        "hasFile": true,
+        "movieFileId": 11,
+        "monitored": true,
+        "minimumAvailability": "announced",
+        "isAvailable": true,
+        "folderName": "/media/Movies/2 Guns (2013)",
+        "runtime": 109,
+        "cleanTitle": "2guns",
+        "imdbId": "tt1272878",
+        "tmdbId": 136400,
+        "titleSlug": "136400",
+        "rootFolderPath": "/media/Movies/",
+        "certification": "R",
+        "genres": [
+            "Action",
+            "Comedy",
+            "Crime"
+        ],
+        "tags": [],
+        "added": "2023-10-06T05:24:18Z",
+        "ratings": {
+            "imdb": {
+                "votes": 231046,
+                "value": 6.7,
+                "type": "user"
+            },
+            "tmdb": {
+                "votes": 4188,
+                "value": 6.539,
+                "type": "user"
+            },
+            "metacritic": {
+                "votes": 0,
+                "value": 55,
+                "type": "user"
+            },
+            "rottenTomatoes": {
+                "votes": 0,
+                "value": 64,
+                "type": "user"
+            }
+        },
+        "movieFile": {
+            "movieId": 12,
+            "relativePath": "2 Guns (2013).mkv",
+            "path": "/media/Movies/2 Guns (2013)/2 Guns (2013).mkv",
+            "size": 2233435101,
+            "dateAdded": "2023-10-06T05:24:27Z",
+            "edition": "",
+            "languages": [
+                {
+                    "id": 1,
+                    "name": "English"
+                }
+            ],
+            "quality": {
+                "quality": {
+                    "id": 3,
+                    "name": "WEBDL-1080p",
+                    "source": "webdl",
+                    "resolution": 1080,
+                    "modifier": "none"
+                },
+                "revision": {
+                    "version": 1,
+                    "real": 0,
+                    "isRepack": false
+                }
+            },
+            "customFormatScore": 0,
+            "indexerFlags": 0,
+            "mediaInfo": {
+                "audioBitrate": 0,
+                "audioChannels": 5.1,
+                "audioCodec": "AAC",
+                "audioLanguages": "eng",
+                "audioStreamCount": 1,
+                "videoBitDepth": 8,
+                "videoBitrate": 0,
+                "videoCodec": "x264",
+                "videoFps": 23.976,
+                "videoDynamicRange": "",
+                "videoDynamicRangeType": "",
+                "resolution": "1920x800",
+                "runTime": "1:49:15",
+                "scanType": "Progressive",
+                "subtitles": ""
+            },
+            "qualityCutoffNotMet": false,
+            "id": 11
+        },
+        "popularity": 22.766,
+        "statistics": {
+            "movieFileCount": 1,
+            "sizeOnDisk": 2233435101,
+            "releaseGroups": []
+        },
+        "id": 12
+    },
+    {
+        "title": "2012",
+        "originalTitle": "2012",
+        "originalLanguage": {
+            "id": 1,
+            "name": "English"
+        },
+        "alternateTitles": [
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012 - Konec sv\u011bta",
+                "id": 71
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012 - Das Ende der Welt",
+                "id": 72
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012 - Wir waren gewarnt",
+                "id": 73
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012 - Fomos Avisados",
+                "id": 74
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "Farewell Atlantis",
+                "id": 75
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012 \u0e27\u0e31\u0e19\u0e2a\u0e34\u0e49\u0e19\u0e42\u0e25\u0e01",
+                "id": 77
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "\u4e8c\u96f6\u4e00\u4e8c",
+                "id": 20679
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012\u672b\u65e5\u9884\u8a00(\u6e2f)",
+                "id": 21381
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012\u4e16\u754c\u672b\u65e5",
+                "id": 21382
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012\u5730\u7403\u6bc1\u706d",
+                "id": 21383
+            },
+            {
+                "sourceType": "tmdb",
+                "movieMetadataId": 13,
+                "title": "2012\u672b\u65e5\u9810\u8a00",
+                "id": 22185
+            }
+        ],
+        "secondaryYearSourceId": 0,
+        "sortTitle": "2012",
+        "sizeOnDisk": 1824452962,
+        "status": "released",
+        "overview": "Dr. Adrian Helmsley, part of a worldwide geophysical team investigating the effect on the earth of radiation from unprecedented solar storms, learns that the earth's core is heating up. He warns U.S. President Thomas Wilson that the crust of the earth is becoming unstable and that without proper preparations for saving a fraction of the world's population, the entire race is doomed. Meanwhile, writer Jackson Curtis stumbles on the same information. While the world's leaders race to build \"arks\" to escape the impending cataclysm, Curtis struggles to find a way to save his family. Meanwhile, volcanic eruptions and earthquakes of unprecedented strength wreak havoc around the world.",
+        "inCinemas": "2009-10-10T00:00:00Z",
+        "physicalRelease": "2010-03-11T00:00:00Z",
+        "digitalRelease": "2009-11-11T00:00:00Z",
+        "images": [
+            {
+                "coverType": "poster",
+                "url": "/MediaCover/13/poster.jpg?lastWrite=638702188994592693",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/zaqam2RNscH5ooYFWInV6hjx6y5.jpg"
+            },
+            {
+                "coverType": "fanart",
+                "url": "/MediaCover/13/fanart.jpg?lastWrite=638708297786093540",
+                "remoteUrl": "https://image.tmdb.org/t/p/original/pvxmYJcgrLiYC6G2IQTn1PPNems.jpg"
+            }
+        ],
+        "website": "http://www.sonypictures.com/movies/2012",
+        "year": 2009,
+        "youTubeTrailerId": "ce0N3TEcFw0",
+        "studio": "Columbia Pictures",
+        "path": "/media/Movies/2012 (2009)",
+        "qualityProfileId": 1,
+        "hasFile": true,
+        "movieFileId": 12,
+        "monitored": true,
+        "minimumAvailability": "announced",
+        "isAvailable": true,
+        "folderName": "/media/Movies/2012 (2009)",
+        "runtime": 158,
+        "cleanTitle": "2012",
+        "imdbId": "tt1190080",
+        "tmdbId": 14161,
+        "titleSlug": "14161",
+        "rootFolderPath": "/media/Movies/",
+        "certification": "PG-13",
+        "genres": [
+            "Action",
+            "Adventure",
+            "Science Fiction"
+        ],
+        "tags": [],
+        "added": "2023-10-06T05:24:18Z",
+        "ratings": {
+            "imdb": {
+                "votes": 408440,
+                "value": 5.8,
+                "type": "user"
+            },
+            "tmdb": {
+                "votes": 12075,
+                "value": 5.8,
+                "type": "user"
+            },
+            "metacritic": {
+                "votes": 0,
+                "value": 49,
+                "type": "user"
+            },
+            "rottenTomatoes": {
+                "votes": 0,
+                "value": 40,
+                "type": "user"
+            }
+        },
+        "movieFile": {
+            "movieId": 13,
+            "relativePath": "2012 (2009).mkv",
+            "path": "/media/Movies/2012 (2009)/2012 (2009).mkv",
+            "size": 1824452962,
+            "dateAdded": "2023-10-06T05:24:27Z",
+            "edition": "",
+            "languages": [
+                {
+                    "id": 1,
+                    "name": "English"
+                }
+            ],
+            "quality": {
+                "quality": {
+                    "id": 3,
+                    "name": "WEBDL-1080p",
+                    "source": "webdl",
+                    "resolution": 1080,
+                    "modifier": "none"
+                },
+                "revision": {
+                    "version": 1,
+                    "real": 0,
+                    "isRepack": false
+                }
+            },
+            "customFormatScore": 0,
+            "indexerFlags": 0,
+            "mediaInfo": {
+                "audioBitrate": 0,
+                "audioChannels": 2,
+                "audioCodec": "AAC",
+                "audioLanguages": "eng",
+                "audioStreamCount": 1,
+                "videoBitDepth": 8,
+                "videoBitrate": 0,
+                "videoCodec": "x264",
+                "videoFps": 23.976,
+                "videoDynamicRange": "",
+                "videoDynamicRangeType": "",
+                "resolution": "1920x816",
+                "runTime": "2:37:49",
+                "scanType": "Progressive",
+                "subtitles": ""
+            },
+            "qualityCutoffNotMet": false,
+            "id": 12
+        },
+        "popularity": 4.44,
+        "statistics": {
+            "movieFileCount": 1,
+            "sizeOnDisk": 1824452962,
+            "releaseGroups": []
+        },
+        "id": 13
+    }
+]
