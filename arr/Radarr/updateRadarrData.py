@@ -31,11 +31,11 @@ csv_file_path = os.path.join(output_dir, "radarr.csv")
 # Retrieve Radarr API details from config
 # ----------------------------------------
 RADARR_URL = configRadarr.RADARR_URL
-API_KEY = configRadarr.API_KEY
-API_URL = configRadarr.API_URL
+RADARR_API_KEY = configRadarr.RADARR_API_KEY
+RADARR_API_URL = configRadarr.RADARR_API_URL
 
 # Include API key in headers for requests
-headers = {"X-Api-Key": API_KEY}
+headers = {"X-Api-Key": RADARR_API_KEY}
 
 def notify(title, message):
     ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
@@ -46,7 +46,7 @@ def notify(title, message):
 def fetch_movies():
     """Fetches movie data from Radarr API and returns a list of movies."""
     try:
-        response = requests.get(API_URL, headers=headers)
+        response = requests.get(RADARR_API_URL, headers=headers)
         movies_data = response.json()
 
         if isinstance(movies_data, list):

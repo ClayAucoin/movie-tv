@@ -6,11 +6,11 @@ import csv
 from datetime import datetime
 import platform
 import ctypes
-import configSonarr  # Import the config module
-
+#import configSonarr  # Import the config module
+from config import SONARR_URL, SONARR_API_KEY, RADARR_URL, RADARR_API_KEY, OUTPUT_DIR
 # 🔹 Update these values
 SONARR_URL = configSonarr.SONARR_URL
-API_KEY = configSonarr.API_KEY
+SONARR_API_KEY = configSonarr.SONARR_API_KEY
 
 
 # Determine file path based on the operating system
@@ -28,7 +28,7 @@ def notify(title, message):
 def get_series_data():
     """Fetches series data from Sonarr API."""
     url = f"{SONARR_URL}/api/v3/series"
-    headers = {"X-Api-Key": API_KEY}
+    headers = {"X-Api-Key": SONARR_API_KEY}
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
