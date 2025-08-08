@@ -5,6 +5,7 @@ import requests
 import csv
 from datetime import datetime
 import platform
+import ctypes
 import configSonarr  # Import the config module
 
 # 🔹 Update these values
@@ -21,6 +22,8 @@ else:
 
 print(f"Using CSV file path: {CSV_FILE_PATH}")
 
+def notify(title, message):
+    ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
 
 def get_series_data():
     """Fetches series data from Sonarr API."""
@@ -127,6 +130,7 @@ def update_csv():
             )
 
     print("✅ CSV updated successfully.")
+    notify("Metadata Script", f"✅ Sonarr\n\nCSV updated successfully.")
 
 
 # 🔹 Run the Script

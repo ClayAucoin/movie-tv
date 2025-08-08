@@ -8,6 +8,7 @@ import requests
 import csv
 import os
 import platform  # Detect OS
+import ctypes
 import configRadarr  # Import configuration for Radarr API
 from datetime import datetime
 
@@ -36,6 +37,8 @@ API_URL = configRadarr.API_URL
 # Include API key in headers for requests
 headers = {"X-Api-Key": API_KEY}
 
+def notify(title, message):
+    ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
 
 # ----------------------------------------
 # Function to fetch movies from Radarr
@@ -160,3 +163,4 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8', errors="replace") as
 # Script Completion Message
 # ----------------------------------------
 print(f"✅ {movies_written}/{len(movies)} movies successfully saved to: {csv_file_path}")
+notify("Metadata Script", f"Radarr\n\n✅ Script completed successfully.\n\n{movies_written}/{len(movies)} movies successfully saved")
