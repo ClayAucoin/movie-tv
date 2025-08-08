@@ -4,83 +4,52 @@ python "C:/Users/Administrator/projects/movie-tv/arr/Radarr/updateRadarrData.py"
 python3 "C:/_lib/data/_scripts_/py/_projects/Arr/Radarr/updateRadarrData.py"
 """
 
+
+# arr/Radarr/updateRadarrData.py
 import requests
 import csv
 import os
-import platform  # Detect OS
-import ctypes
-import configRadarr  # Import configuration for Radarr API
+import platform
 from datetime import datetime
+import sys
 
-# ----------------------------------------
-# Set base output directory based on OS
-# ----------------------------------------
+# Path hack (Option C)
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from config.config import RADARR_URL, RADARR_API_KEY, RADARR_API_URL
+
+# Output directory per OS
 if platform.system() == "Windows":
-    #output_dir = "C:\\Users\\Administrator\\Dropbox\\arr\\"  # Windows path for Dropbox
-    output_dir = "E:\\My Drive\\_clay0aucoin@gmail.com\\movies_on_m\\arr"
+    output_dir = r"E:\My Drive\_clay0aucoin@gmail.com\movies_on_m\arr"
 else:
-    output_dir = "/mnt/c/Users/Administrator/Dropbox/arr/"  # Linux/WSL path for Dropbox
+    output_dir = "/mnt/c/Users/Administrator/Dropbox/arr/"
 
-# Ensure the output directory exists
 os.makedirs(output_dir, exist_ok=True)
-
-# Define the CSV file path
 csv_file_path = os.path.join(output_dir, "radarr.csv")
 
-# ----------------------------------------
-# Retrieve Radarr API details from config
-# ----------------------------------------
-RADARR_URL = configRadarr.RADARR_URL
-RADARR_API_KEY = configRadarr.RADARR_API_KEY
-RADARR_API_URL = configRadarr.RADARR_API_URL
-
-# Include API key in headers for requests
 headers = {"X-Api-Key": RADARR_API_KEY}
 
-def notify(title, message):
-    ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
-
-# ----------------------------------------
-# Function to fetch movies from Radarr
-# ----------------------------------------
 def fetch_movies():
-    """Fetches movie data from Radarr API and returns a list of movies."""
     try:
-        response = requests.get(RADARR_API_URL, headers=headers)
-        movies_data = response.json()
-
-        if isinstance(movies_data, list):
-            print(f"✅ Retrieved {len(movies_data)} movies from Radarr.")
-            return movies_data
-        else:
-            print(f"❌ Unexpected response type: {type(movies_data)}")
+        r = requests.get(RADARR_API_URL, headers=headers)
+        r.raise_for_status()
+        data = r.json()
+        if not isinstance(data, list):
+            print(f"❌ Unexpected response type: {type(data)}")
             return []
+        print(f"✅ Retrieved {len(data)} movies from Radarr.")
+        return data
     except Exception as e:
         print(f"❌ Error fetching data from Radarr: {e}")
         return []
 
+def format_date(s):
+    return s.split("T")[0] if s and "T" in s else s
 
-# ----------------------------------------
-# Function to format date fields
-# ----------------------------------------
-def format_date(date_string):
-    """Formats date strings to 'YYYY-MM-DD' format, removing time if present."""
-    return date_string.split("T")[0] if date_string and "T" in date_string else date_string
-
-
-# ----------------------------------------
-# Fetch movie data from Radarr
-# ----------------------------------------
 movies = fetch_movies()
-
-# Exit early if no movies found
 if not movies:
     print("❌ No movies found. Exiting script.")
-    exit()
+    raise SystemExit(1)
 
-# ----------------------------------------
-# Define CSV field order
-# ----------------------------------------
 fieldnames = [
     'imdbId', 'tmdbId', 'Title', 'SortTitle', 'Year', 'Physical Release', 'InCinemas', 'Status',
     'Length', 'RunTime', 'HasFile', 'Quality', 'Resolution', 'Aspect Ratio', 'Subtitles',
@@ -88,79 +57,62 @@ fieldnames = [
     'Overview', 'Website', 'Monitored', 'Certification', 'Tags', 'Genres', 'Original Language'
 ]
 
-movies_written = 0  # Track number of successfully written movies
+written = 0
 
-# ----------------------------------------
-# Write movie data to CSV file
-# ----------------------------------------
-with open(csv_file_path, 'w', newline='', encoding='utf-8', errors="replace") as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
-    writer.writeheader()  # Write CSV header row
+with open(csv_file_path, 'w', newline='', encoding='utf-8', errors='replace') as f:
+    w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction='ignore')
+    w.writeheader()
 
-    for movie in movies:
+    for m in movies:
         try:
-            # Extract nested data safely
-            movie_file = movie.get("movieFile", {})
-            media_info = movie_file.get("mediaInfo", {})
-            quality_info = movie_file.get("quality", {}).get("quality", {})
+            mf = m.get("movieFile", {}) or {}
+            mi = mf.get("mediaInfo", {}) or {}
+            q = mf.get("quality", {}) or {}
+            q_quality = q.get("quality", {}) or {}
 
-            # Format subtitles field
-            subtitles = media_info.get("subtitles", "")
-            if isinstance(subtitles, list):
-                subtitles = ", ".join([sub["language"] for sub in subtitles if isinstance(sub, dict)])
+            subs = mi.get("subtitles", "")
+            if isinstance(subs, list):
+                subs = ", ".join([s.get("language", "") for s in subs if isinstance(s, dict)])
 
-            # Handle collection data correctly (dictionary, not list)
-            collection = movie.get("collection", {})
-            collection_title = collection.get("title", "")
-            collection_tmdbId = collection.get("tmdbId", "")
+            coll = m.get("collection", {}) or {}
+            coll_title = coll.get("title", "")
+            coll_tmdb = coll.get("tmdbId", "")
 
-            # Get original Language name
-            originalLanguage = movie.get("originalLanguage", {})
-            original_language = originalLanguage.get("name", "")
+            lang = (m.get("originalLanguage") or {}).get("name", "")
 
-            # Construct row with formatted data
             row = {
-                "imdbId": movie.get("imdbId", ""),
-                "tmdbId": movie.get("tmdbId", ""),
-                "Title": movie.get("title", ""),
-                "SortTitle": movie.get("sortTitle", ""),
-                "Year": movie.get("year", ""),
-                "Physical Release": format_date(movie.get("physicalRelease", "")),
-                "InCinemas": format_date(movie.get("inCinemas", "")),
-                "Status": movie.get("status", ""),
-                # remove length
-                "Length": movie.get("runtime", ""),
-                "RunTime": media_info.get("runTime", ""),
-                "HasFile": movie.get("hasFile", ""),
-                "Quality": quality_info.get("name", ""),
-                "Resolution": quality_info.get("resolution", ""),
-                "Aspect Ratio": media_info.get("resolution", ""),
-                "Subtitles": subtitles,
-                "Collection Title": collection_title,
-                "Collection tmdbId": collection_tmdbId,
-                "SizeOnDisk": movie.get("sizeOnDisk", ""),
-                "MovieFile Path": movie_file.get("path", ""),
-                "YT TrailerId": movie.get("youTubeTrailerId", ""),
-                "Overview": movie.get("overview", ""),
-                "Website": movie.get("website", ""),
-                "Monitored": movie.get("monitored", ""),
-                "Certification": movie.get("certification", ""),
-                "Tags": movie.get("tags", ""),
-                "Genres": movie.get("genres", ""),
-                "Original Language": original_language,
-
+                "imdbId": m.get("imdbId", ""),
+                "tmdbId": m.get("tmdbId", ""),
+                "Title": m.get("title", ""),
+                "SortTitle": m.get("sortTitle", ""),
+                "Year": m.get("year", ""),
+                "Physical Release": format_date(m.get("physicalRelease", "")),
+                "InCinemas": format_date(m.get("inCinemas", "")),
+                "Status": m.get("status", ""),
+                "Length": m.get("runtime", ""),
+                "RunTime": mi.get("runTime", ""),
+                "HasFile": m.get("hasFile", ""),
+                "Quality": q_quality.get("name", ""),
+                "Resolution": q_quality.get("resolution", ""),
+                "Aspect Ratio": mi.get("resolution", ""),
+                "Subtitles": subs,
+                "Collection Title": coll_title,
+                "Collection tmdbId": coll_tmdb,
+                "SizeOnDisk": m.get("sizeOnDisk", ""),
+                "MovieFile Path": mf.get("path", ""),
+                "YT TrailerId": m.get("youTubeTrailerId", ""),
+                "Overview": m.get("overview", ""),
+                "Website": m.get("website", ""),
+                "Monitored": m.get("monitored", ""),
+                "Certification": m.get("certification", ""),
+                "Tags": ", ".join(m.get("tags", [])) if isinstance(m.get("tags"), list) else m.get("tags", ""),
+                "Genres": ", ".join(m.get("genres", [])) if isinstance(m.get("genres"), list) else m.get("genres", ""),
+                "Original Language": lang,
             }
 
-            # Write row to CSV
-            writer.writerow(row)
-            csvfile.flush()  # Ensure data is written immediately
-            movies_written += 1
-
+            w.writerow(row)
+            written += 1
         except Exception as e:
-            print(f"⚠️ Error processing movie '{movie.get('title', 'Unknown')}': {e}")
+            print(f"⚠️ Error processing movie '{m.get('title', 'Unknown')}': {e}")
 
-# ----------------------------------------
-# Script Completion Message
-# ----------------------------------------
-print(f"✅ {movies_written}/{len(movies)} movies successfully saved to: {csv_file_path}")
-# notify("Metadata Script", f"Radarr\n\n✅ Script completed successfully.\n\n{movies_written}/{len(movies)} movies successfully saved")
+print(f"✅ {written}/{len(movies)} movies successfully saved to: {csv_file_path}")
