@@ -163,4 +163,4 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8', errors="replace") as
 # Script Completion Message
 # ----------------------------------------
 print(f"✅ {movies_written}/{len(movies)} movies successfully saved to: {csv_file_path}")
-notify("Metadata Script", f"Radarr\n\n✅ Script completed successfully.\n\n{movies_written}/{len(movies)} movies successfully saved")
+# notify("Metadata Script", f"Radarr\n\n✅ Script completed successfully.\n\n{movies_written}/{len(movies)} movies successfully saved")

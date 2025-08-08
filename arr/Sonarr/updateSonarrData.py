@@ -130,7 +130,7 @@ def update_csv():
             )
 
     print("✅ CSV updated successfully.")
-    notify("Metadata Script", f"✅ Sonarr\n\nCSV updated successfully.")
+    # notify("Metadata Script", f"✅ Sonarr\n\nCSV updated successfully.")
 
 
 # 🔹 Run the Script
