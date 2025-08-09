@@ -9,8 +9,9 @@ import ctypes
 
 import os, sys
 
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # adds .../arr to path
-from arr.config.config import SONARR_URL, SONARR_API_KEY, RADARR_URL, RADARR_API_KEY
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # .../movie-tv
+sys.path.append(PROJECT_ROOT)
+from arr.config.config import SONARR_URL, SONARR_API_KEY, SONARR_API_URL
 
 # Determine file path based on the operating system
 if platform.system() == "Windows":
@@ -34,6 +35,7 @@ def get_series_data():
         raise Exception(f"Error fetching data: {response.status_code}, {response.text}")
 
     print(f"✅ Retrieved {len(response.json())} series from Sonarr.")  # Debugging line
+    # notify("Sonarr Script", f"✅ Retrieved {len(response.json())} series from Sonarr.")
     return response.json()
 
 
@@ -129,7 +131,6 @@ def update_csv():
             )
 
     print("✅ CSV updated successfully.")
-    # notify("Metadata Script", f"✅ Sonarr\n\nCSV updated successfully.")
 
 
 # 🔹 Run the Script

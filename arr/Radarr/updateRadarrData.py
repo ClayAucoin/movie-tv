@@ -4,16 +4,17 @@ python "C:/Users/Administrator/projects/movie-tv/arr/Radarr/updateRadarrData.py"
 python3 "C:/_lib/data/_scripts_/py/_projects/Arr/Radarr/updateRadarrData.py"
 """
 
-
+import sys
 import requests
 import csv
 import os
 import platform
+import ctypes
 from datetime import datetime
-import sys
+#import sys
 
-# Path hack (Option C)
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # .../movie-tv
+sys.path.append(PROJECT_ROOT)
 from arr.config.config import RADARR_URL, RADARR_API_KEY, RADARR_API_URL
 
 # Output directory per OS
@@ -26,6 +27,9 @@ os.makedirs(output_dir, exist_ok=True)
 csv_file_path = os.path.join(output_dir, "radarr.csv")
 
 headers = {"X-Api-Key": RADARR_API_KEY}
+
+def notify(title, message):
+    ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
 
 def fetch_movies():
     try:
@@ -115,3 +119,4 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8', errors='replace') as
             print(f"⚠️ Error processing movie '{m.get('title', 'Unknown')}': {e}")
 
 print(f"✅ {written}/{len(movies)} movies successfully saved to: {csv_file_path}")
+# notify("Radarr Script", f"✅ {written}/{len(movies)} movies successfully saved")
