@@ -30,7 +30,7 @@ with open(LOCK_FILE, 'w') as f:
 if platform.system() == "Windows":
     #TARGET_DIR = r"M:/Movie Test Dir 1/"
     TARGET_DIR = r"M:/Movies/"
-    OUTPUT_CSV = r"E:/My Drive/_clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
+    OUTPUT_CSV = r"E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
 else:
     TARGET_DIR = r"/mnt/m/Movies/"
     OUTPUT_CSV = r"/mnt/c/Users/Administrator/Dropbox/movies_on_m"

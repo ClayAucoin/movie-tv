@@ -5,7 +5,6 @@ python3 "C:/_lib/data/_scripts_/py/_projects/Arr/Radarr/updateRadarrData.py"
 """
 
 
-# arr/Radarr/updateRadarrData.py
 import requests
 import csv
 import os
@@ -15,11 +14,11 @@ import sys
 
 # Path hack (Option C)
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from config.config import RADARR_URL, RADARR_API_KEY, RADARR_API_URL
+from arr.config.config import RADARR_URL, RADARR_API_KEY, RADARR_API_URL
 
 # Output directory per OS
 if platform.system() == "Windows":
-    output_dir = r"E:\My Drive\_clay0aucoin@gmail.com\movies_on_m\arr"
+    output_dir = r"E:\My Drive\__clay0aucoin@gmail.com\movies_on_m\arr"
 else:
     output_dir = "/mnt/c/Users/Administrator/Dropbox/arr/"
 

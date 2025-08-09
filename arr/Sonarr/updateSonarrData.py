@@ -6,22 +6,16 @@ import csv
 from datetime import datetime
 import platform
 import ctypes
-#import configSonarr  # Import the config module
 
 import os, sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # adds .../arr to path
-from config.config import SONARR_URL, SONARR_API_KEY, RADARR_URL, RADARR_API_KEY
-
-# 🔹 Update these values
-SONARR_URL = config.config.SONARR_URL
-SONARR_API_KEY = config.SONARR_API_KEY
-
+from arr.config.config import SONARR_URL, SONARR_API_KEY, RADARR_URL, RADARR_API_KEY
 
 # Determine file path based on the operating system
 if platform.system() == "Windows":
     # CSV_FILE_PATH = "C:/Users/Administrator/Dropbox/arr/sonarr.csv"  # Dropbox Windows Path to save CSV file
-    CSV_FILE_PATH = "E:/My Drive/_clay0aucoin@gmail.com/movies_on_m/arr/sonarr.csv"
+    CSV_FILE_PATH = "E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/arr/sonarr.csv"
 else:
     CSV_FILE_PATH = "/mnt/c/Users/Administrator/Dropbox/arr/sonarr.csv"  # Dropbox Linux/WSL Path
 
