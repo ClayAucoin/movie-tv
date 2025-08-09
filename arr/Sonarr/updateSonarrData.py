@@ -22,8 +22,12 @@ else:
 
 print(f"Using CSV file path: {CSV_FILE_PATH}")
 
+# Check if the script is running with the "/task_scheduler" argument
+is_task_scheduler = '/task_scheduler' in sys.argv
+
 def notify(title, message):
-    ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
+    if not is_task_scheduler:
+        ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
 
 def get_series_data():
     """Fetches series data from Sonarr API."""
@@ -35,7 +39,7 @@ def get_series_data():
         raise Exception(f"Error fetching data: {response.status_code}, {response.text}")
 
     print(f"✅ Retrieved {len(response.json())} series from Sonarr.")  # Debugging line
-    # notify("Sonarr Script", f"✅ Retrieved {len(response.json())} series from Sonarr.")
+    notify("Sonarr Script", f"✅ Retrieved {len(response.json())} series from Sonarr.")
     return response.json()
 
 

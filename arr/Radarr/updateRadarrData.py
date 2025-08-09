@@ -11,11 +11,17 @@ import os
 import platform
 import ctypes
 from datetime import datetime
-#import sys
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # .../movie-tv
 sys.path.append(PROJECT_ROOT)
 from arr.config.config import RADARR_URL, RADARR_API_KEY, RADARR_API_URL
+
+# Check if the script is running with the "/task_scheduler" argument
+is_task_scheduler = '/task_scheduler' in sys.argv
+
+def notify(title, message):
+    if not is_task_scheduler:
+        ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
 
 # Output directory per OS
 if platform.system() == "Windows":
@@ -27,9 +33,6 @@ os.makedirs(output_dir, exist_ok=True)
 csv_file_path = os.path.join(output_dir, "radarr.csv")
 
 headers = {"X-Api-Key": RADARR_API_KEY}
-
-def notify(title, message):
-    ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
 
 def fetch_movies():
     try:
@@ -43,6 +46,7 @@ def fetch_movies():
         return data
     except Exception as e:
         print(f"❌ Error fetching data from Radarr: {e}")
+        notify("Radarr Script", f"❌ Error fetching data from Radarr: {e}")
         return []
 
 def format_date(s):
@@ -119,4 +123,4 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8', errors='replace') as
             print(f"⚠️ Error processing movie '{m.get('title', 'Unknown')}': {e}")
 
 print(f"✅ {written}/{len(movies)} movies successfully saved to: {csv_file_path}")
-# notify("Radarr Script", f"✅ {written}/{len(movies)} movies successfully saved")
+notify("Radarr Script", f"✅ {written}/{len(movies)} movies successfully saved")
