@@ -5,21 +5,22 @@ python3 "/mnt/c/_lib/data/_scripts_/py/_projects/Arr/Radarr/extractFieldNames.py
 import requests
 import json
 import os
-import configRadarr  # Import the config module
+import sys
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # .../movie-tv
+sys.path.append(PROJECT_ROOT)
+from arr.config.config import RADARR_URL, RADARR_API_KEY, RADARR_API_URL
 
 # Get the directory where the script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
 fields_file_path = os.path.join(script_dir, "radarr_available_fields.txt")  # Save in the same directory as the script
 
-RADARR_URL = configRadarr.RADARR_URL
-API_KEY = configRadarr.API_KEY
-API_URL = f"{RADARR_URL}/api/v3/movie/"
 
 # Include API key in headers
-headers = {"X-Api-Key": API_KEY}
+headers = {"X-Api-Key": RADARR_API_KEY}
 
 # Make the API request
-response = requests.get(API_URL, headers=headers)
+response = requests.get(RADARR_API_URL, headers=headers)
 
 if response.status_code == 200:
     try:
@@ -54,4 +55,4 @@ if response.status_code == 200:
         print(f"❌ Error parsing JSON: {e}")
 else:
     print(f"❌ Error: Unable to fetch data. Status code: {response.status_code}")
-    print(API_URL)
+    print(RADARR_API_URL)

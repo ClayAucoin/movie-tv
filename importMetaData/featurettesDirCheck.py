@@ -1,5 +1,5 @@
 """
-python "C:/_lib/data/_scripts_/py/_projects/ImportMetaData/featurettesDirCheck.py"
+python "C:/Users/Administrator/projects/movie-tv/importMetaData/featurettesDirCheck.py"
 
 """
 
@@ -8,7 +8,7 @@ import csv
 
 # Define the search directory and output CSV path
 search_dir = r"M:\Movies"
-output_csv = r"E:\My Drive\_clay0aucoin@gmail.com\movies_on_m\featurettes_folders.csv"
+output_csv = r"E:\My Drive\__clay0aucoin@gmail.com\movies_on_m\featurettes_folders.csv"
 
 # List to hold directories that contain a 'Featurettes' subdirectory
 results = []

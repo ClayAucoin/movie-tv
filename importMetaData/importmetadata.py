@@ -74,12 +74,14 @@ if os.path.exists(OUTPUT_CSV):
 
 def extract_metadata_cli(path, rel_path, stat, start_time):
     try:
+        # This will suppress the command window for the subprocess
         result = subprocess.run(
             ['mediainfo', '--Output=JSON', path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             encoding='utf-8',
-            timeout=10
+            timeout=10,
+            creationflags=subprocess.CREATE_NO_WINDOW  # Add this line to suppress the window
         )
         data = json.loads(result.stdout)
         tracks = data.get("media", {}).get("track", [])
