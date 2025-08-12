@@ -123,4 +123,4 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8', errors='replace') as
             print(f"⚠️ Error processing movie '{m.get('title', 'Unknown')}': {e}")
 
 print(f"✅ {written}/{len(movies)} movies successfully saved to: {csv_file_path}")
-notify("Radarr Script", f"✅ {written}/{len(movies)} movies successfully saved")
+notify("Radarr Script", f"✅ {len(movies)} movies successfully saved")
