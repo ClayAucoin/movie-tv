@@ -20,8 +20,12 @@ from arr.config.config import RADARR_URL, RADARR_API_KEY, RADARR_API_URL
 is_task_scheduler = '/task_scheduler' in sys.argv
 
 def notify(title, message):
-    if not is_task_scheduler:
-        ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
+    try:
+        if not is_task_scheduler:
+            ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
+    except Exception:
+        # If not on Windows or GUI not available, ignore
+        pass
 
 # Output directory per OS
 if platform.system() == "Windows":
