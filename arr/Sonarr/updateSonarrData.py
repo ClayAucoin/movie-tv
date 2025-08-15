@@ -13,21 +13,25 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # ..
 sys.path.append(PROJECT_ROOT)
 from arr.config.config import SONARR_URL, SONARR_API_KEY, SONARR_API_URL
 
-# Determine file path based on the operating system
-if platform.system() == "Windows":
-    # CSV_FILE_PATH = "C:/Users/Administrator/Dropbox/arr/sonarr.csv"  # Dropbox Windows Path to save CSV file
-    CSV_FILE_PATH = "E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/arr/sonarr.csv"
-else:
-    CSV_FILE_PATH = "/mnt/c/Users/Administrator/Dropbox/arr/sonarr.csv"  # Dropbox Linux/WSL Path
-
-print(f"Using CSV file path: {CSV_FILE_PATH}")
-
 # Check if the script is running with the "/task_scheduler" argument
 is_task_scheduler = '/task_scheduler' in sys.argv
 
 def notify(title, message):
-    if not is_task_scheduler:
-        ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
+    try:
+        if not is_task_scheduler:
+            ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
+    except Exception:
+        # If not on Windows or GUI not available, ignore
+        pass
+
+# Determine file path based on the operating system
+if platform.system() == "Windows":
+    # CSV_FILE_PATH = "C:/Users/Administrator/Dropbox/arr/sonarr.csv"  # Dropbox Windows Path to save CSV file
+    CSV_FILE_PATH = "E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/sonarr.csv"
+else:
+    CSV_FILE_PATH = "/mnt/E/MY DRIVE/__clay0aucoin@gmail.com/movies_on_m/sonarr.csv"  # Dropbox Linux/WSL Path
+
+print(f"Using CSV file path: {CSV_FILE_PATH}")
 
 def get_series_data():
     """Fetches series data from Sonarr API."""

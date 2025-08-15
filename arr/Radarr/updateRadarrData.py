@@ -1,7 +1,7 @@
 """
 python "C:/Users/Administrator/projects/movie-tv/arr/Radarr/updateRadarrData.py"
 
-python3 "C:/_lib/data/_scripts_/py/_projects/Arr/Radarr/updateRadarrData.py"
+python3 "/mnt/c/Users/Administrator/projects/movie-tv/arr/Radarr/updateRadarrData.py"
 """
 
 import sys
@@ -29,9 +29,9 @@ def notify(title, message):
 
 # Output directory per OS
 if platform.system() == "Windows":
-    output_dir = r"E:\My Drive\__clay0aucoin@gmail.com\movies_on_m\arr"
+    output_dir = r"E:\My Drive\__clay0aucoin@gmail.com\movies_on_m"
 else:
-    output_dir = "/mnt/c/Users/Administrator/Dropbox/arr/"
+    output_dir = "/mnt/E/MY DRIVE/__clay0aucoin@gmail.com/movies_on_m"
 
 os.makedirs(output_dir, exist_ok=True)
 csv_file_path = os.path.join(output_dir, "radarr.csv")

@@ -22,9 +22,13 @@ from datetime import datetime
 # Config & Utilities
 # ---------------------------
 
+# Check if the script is running with the "/task_scheduler" argument
+is_task_scheduler = '/task_scheduler' in sys.argv
+
 def notify(title, message):
     try:
-        ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
+        if not is_task_scheduler:
+            ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
     except Exception:
         # If not on Windows or GUI not available, ignore
         pass
@@ -68,8 +72,8 @@ try:
     # Paths
     # ---------------------------
     if platform.system() == "Windows":
-        # TARGET_DIR = r"M:/Movie Test Dir 1/"
-        TARGET_DIR = r"M:/Movies/"
+        TARGET_DIR = r"M:/Movie Test Dir 1/"
+        # TARGET_DIR = r"M:/Movies/"
         OUTPUT_CSV = r"E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
     else:
         TARGET_DIR = r"/mnt/m/Movies/"

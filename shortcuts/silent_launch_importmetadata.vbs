@@ -1,4 +1,4 @@
-' silent_launch_arrs.vbs
+' silent_launch_importmetadata.vbs
 Dim objShell
 Set objShell = CreateObject("WScript.Shell")
 
