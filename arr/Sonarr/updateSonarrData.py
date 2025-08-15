@@ -26,7 +26,6 @@ def notify(title, message):
 
 # Determine file path based on the operating system
 if platform.system() == "Windows":
-    # CSV_FILE_PATH = "C:/Users/Administrator/Dropbox/arr/sonarr.csv"  # Dropbox Windows Path to save CSV file
     CSV_FILE_PATH = "E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/sonarr.csv"
 else:
     CSV_FILE_PATH = "/mnt/E/MY DRIVE/__clay0aucoin@gmail.com/movies_on_m/sonarr.csv"  # Dropbox Linux/WSL Path

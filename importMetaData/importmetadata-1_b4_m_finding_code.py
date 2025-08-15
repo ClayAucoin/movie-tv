@@ -1,5 +1,5 @@
 """
-python "C:/Users/Administrator/projects/movie-tv/importMetaData/importmetadata.py"
+python "C:/Users/Administrator/projects/movie-tv/importMetaData/importmetadata-1_b4_m_finding_code.py"
 
     TARGET_DIR = r"M:/Movie Test Dir 1/"
     TARGET_DIR = r"M:/Movies/"
@@ -72,19 +72,9 @@ try:
     # Paths
     # ---------------------------
     if platform.system() == "Windows":
+        #TARGET_DIR = r"M:/Movie Test Dir 1/"
+        TARGET_DIR = r"M:/Movies/"
         OUTPUT_CSV = r"E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
-
-        # original directories
-        # TARGET_DIR = r"\\192.168.1.205\Movies"  # <-- replace with your share
-        # M_LETTER = r"M:\Movies\""
-        # UNC_FALLBACK = r"\\192.168.1.205\Movies"  # <-- replace
-
-        # testing directories
-        TARGET_DIR = r"\\192.168.1.205\Movie Test Dir 1"  # <-- replace with your share
-        M_LETTER = r"M:\Movie Test Dir 1\""
-        UNC_FALLBACK = r"\\192.168.1.205\Movie Test Dir 1"  # <-- replace
-
-        TARGET_DIR = M_LETTER if os.path.exists(M_LETTER) else UNC_FALLBACK
     else:
         TARGET_DIR = r"/mnt/m/Movies/"
         OUTPUT_CSV = r"/mnt/c/Users/Administrator/Dropbox/movies_on_m"
@@ -121,9 +111,7 @@ try:
     # ---------------------------
     # Locate mediainfo
     # ---------------------------
-    MEDIAINFO = r"C:\Tools\MediaInfo\mediainfo.exe"  # <-- set to your actual path
-    # MEDIAINFO = os.environ.get("MEDIAINFO_PATH") or MEDIAINFO  # optional env override
-
+    MEDIAINFO = os.environ.get("MEDIAINFO_PATH") or "mediainfo"
     try:
         _chk = subprocess.run(
             [MEDIAINFO, "--Version"],
@@ -347,11 +335,7 @@ try:
                 continue
             files_to_process.append((path, rel_path, stat))
 
-    #log(f"Discovered {len(files_to_process)} files to process")
-    log(f"Discovered {len(files_to_process)} files to process in: {TARGET_DIR}")
-    if not files_to_process:
-        log("No files found. Likely causes: 1) TARGET_DIR not accessible in scheduler context "
-            "(mapped drive letter missing), 2) UNC path/permissions, 3) filters excluded all files.")
+    log(f"Discovered {len(files_to_process)} files to process")
 
     # ---------------------------
     # Process in parallel
