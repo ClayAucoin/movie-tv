@@ -75,14 +75,14 @@ try:
         OUTPUT_CSV = r"E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
 
         # original directories
-        # TARGET_DIR = r"\\192.168.1.205\Movies"  # <-- replace with your share
-        # M_LETTER = r"M:\Movies\""
-        # UNC_FALLBACK = r"\\192.168.1.205\Movies"  # <-- replace
+        TARGET_DIR = r"\\192.168.1.205\Media\Movies"  # <-- replace with your share
+        M_LETTER = r"M:\Movies"
+        UNC_FALLBACK = r"\\192.168.1.205\Media\Movies"  # <-- replace
 
         # testing directories
-        TARGET_DIR = r"\\192.168.1.205\Movie Test Dir 1"  # <-- replace with your share
-        M_LETTER = r"M:\Movie Test Dir 1\""
-        UNC_FALLBACK = r"\\192.168.1.205\Movie Test Dir 1"  # <-- replace
+        # TARGET_DIR = r"\\192.168.1.205\Media\Movie Test Dir 1"  # <-- replace with your share
+        # M_LETTER = r"M:\Movie Test Dir 1"
+        # UNC_FALLBACK = r"\\192.168.1.205\Media\Movie Test Dir 1"  # <-- replace
 
         TARGET_DIR = M_LETTER if os.path.exists(M_LETTER) else UNC_FALLBACK
     else:
