@@ -6,7 +6,6 @@ python "C:/Users/Administrator/projects/movie-tv/importMetaData/importmetadata.p
 
 """
 
-
 import os
 import csv
 import platform
@@ -25,6 +24,7 @@ from datetime import datetime
 # Check if the script is running with the "/task_scheduler" argument
 is_task_scheduler = '/task_scheduler' in sys.argv
 
+
 def notify(title, message):
     try:
         if not is_task_scheduler:
@@ -33,15 +33,18 @@ def notify(title, message):
         # If not on Windows or GUI not available, ignore
         pass
 
+
 def ensure_dir(path):
     d = os.path.dirname(path)
     if d and not os.path.exists(d):
         os.makedirs(d, exist_ok=True)
 
+
 def log_setup(output_csv):
     log_path = output_csv.replace(".csv", "_run.log")
     ensure_dir(output_csv)
     return log_path
+
 
 def log(msg, *, also_print=True):
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -54,6 +57,7 @@ def log(msg, *, also_print=True):
         pass
     if also_print:
         print(line, flush=True)
+
 
 # ---------------------------
 # Lock file (single instance)
@@ -131,7 +135,7 @@ try:
             stderr=subprocess.PIPE,
             encoding="utf-8",
             timeout=5,
-            creationflags=subprocess.CREATE_NO_WINDOW if platform.system()=="Windows" else 0
+            creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
         )
         if _chk.returncode != 0:
             log(f"Warning: mediainfo returned code {_chk.returncode}. stderr={_chk.stderr.strip()}")
@@ -176,6 +180,7 @@ try:
         except Exception as e:
             log(f"Error reading existing CSV: {e}")
 
+
     # ---------------------------
     # Extraction helpers
     # ---------------------------
@@ -186,8 +191,8 @@ try:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 encoding='utf-8',
-                #timeout=20,
-                creationflags=subprocess.CREATE_NO_WINDOW if platform.system()=="Windows" else 0
+                # timeout=20,
+                creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
             )
 
             if result.returncode != 0 or not result.stdout.strip():
@@ -323,6 +328,7 @@ try:
             log(f"[ERROR] {os.path.basename(path)} — {e}")
             return None, None, None
 
+
     # ---------------------------
     # Gather files to process
     # ---------------------------
@@ -347,7 +353,7 @@ try:
                 continue
             files_to_process.append((path, rel_path, stat))
 
-    #log(f"Discovered {len(files_to_process)} files to process")
+    # log(f"Discovered {len(files_to_process)} files to process")
     log(f"Discovered {len(files_to_process)} files to process in: {TARGET_DIR}")
     if not files_to_process:
         log("No new files or any changed files.")
@@ -385,11 +391,27 @@ try:
     # Merge, write CSV, save cache
     # ---------------------------
     all_rows = existing_rows + updated_rows
+
     final_rows = {}
+    missing_but_kept = 0
     for row in all_rows:
-        rel_path = os.path.relpath(os.path.join(row["Path of file"], row["Name of file"]), TARGET_DIR)
-        if os.path.exists(os.path.join(row["Path of file"], row["Name of file"])):
-            final_rows[rel_path] = row
+        # Build a stable rel_path key relative to the TARGET_DIR we actually walked
+        abs_path = os.path.join(row["Path of file"], row["Name of file"])
+        try:
+            rel_path = os.path.relpath(abs_path, TARGET_DIR)
+        except Exception:
+            # If relpath fails due to path base mismatch, just use the absolute path as key
+            rel_path = os.path.normpath(abs_path)
+
+        # Only drop rows if we *know* the file was deleted (we already pruned the cache above).
+        # Don't rely on os.path.exists here—under Task Scheduler that can lie due to session creds.
+        if not os.path.exists(abs_path):
+            missing_but_kept += 1  # keep it anyway to avoid header-only CSVs
+
+        final_rows[rel_path] = row  # last write wins for dedupe
+
+    if missing_but_kept:
+        log(f"Note: {missing_but_kept} files not visible to this session (kept in CSV).")
 
     ensure_dir(OUTPUT_CSV)
     with open(OUTPUT_CSV, 'w', newline='', encoding='utf8') as f:
@@ -397,6 +419,13 @@ try:
         writer.writeheader()
         for row in sorted(final_rows.values(), key=lambda r: r["Name of file"]):
             writer.writerow(row)
+
+    try:
+        with open(OUTPUT_CSV, newline='', encoding='utf-8') as f:
+            row_count = sum(1 for _ in f)
+        log(f"Verify: wrote {max(0, row_count - 1)} data rows to CSV.")
+    except Exception as e:
+        log(f"Verify: could not reopen CSV for count — {e}")
 
     with open(CACHE_FILE, 'w', encoding='utf-8') as f:
         json.dump(file_cache, f, indent=2)
