@@ -186,7 +186,7 @@ try:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 encoding='utf-8',
-                timeout=20,
+                #timeout=20,
                 creationflags=subprocess.CREATE_NO_WINDOW if platform.system()=="Windows" else 0
             )
 
@@ -350,8 +350,7 @@ try:
     #log(f"Discovered {len(files_to_process)} files to process")
     log(f"Discovered {len(files_to_process)} files to process in: {TARGET_DIR}")
     if not files_to_process:
-        log("No files found. Likely causes: 1) TARGET_DIR not accessible in scheduler context "
-            "(mapped drive letter missing), 2) UNC path/permissions, 3) filters excluded all files.")
+        log("No new files or any changed files.")
 
     # ---------------------------
     # Process in parallel
