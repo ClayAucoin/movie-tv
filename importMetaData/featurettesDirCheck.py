@@ -3,24 +3,40 @@ python "C:/Users/Administrator/projects/movie-tv/importMetaData/featurettesDirCh
 
 """
 
+
 import os
 import csv
 import sys
+import ctypes
 from datetime import datetime
 
 # ---------------- Configuration ----------------
 # Prefer UNC in scheduled tasks; fall back to mapped drive if available.
-SEARCH_DIR_PRIMARY = r"\\192.168.1.205\Media\Movies"  # <-- replace if needed
-SEARCH_DIR_FALLBACK = r"M:\Movies"
+SEARCH_DIR_PRIMARY = r"\\192.168.1.205\Media\Movies"   # walk this when available
+SEARCH_DIR_FALLBACK = r"M:\Movies"                     # else walk this
+
+# How you want paths to appear in the CSV (display prefix)
+DISPLAY_PREFIX = r"M:\Movies"                          # always show M:\Movies\...
 
 # Write to a local path the Task Scheduler session always has access to.
-OUTPUT_LOCAL = r"C:\Data\featurettes_folders.csv"
+OUTPUT_LOCAL = r"C:\_\featurettes_folders.csv"
 
 # Optional mirror to Google Drive (will only run if the path exists in this session)
 OUTPUT_GDRIVE = r"E:\My Drive\__clay0aucoin@gmail.com\movies_on_m\featurettes_folders.csv"
 
 # Lock against concurrent writers (based on the local output)
 LOCK_FILE = OUTPUT_LOCAL + ".lock"
+
+# Check if the script is running with the "/task_scheduler" argument
+is_task_scheduler = '/task_scheduler' in sys.argv
+
+
+def notify(title, message):
+    try:
+        if not is_task_scheduler:
+            ctypes.windll.user32.MessageBoxW(0, message, title, 0x40)
+    except Exception:
+        pass
 
 
 # ----------------- Helpers ---------------------
@@ -41,6 +57,20 @@ def release_lock(lock_path):
         pass
 
 
+def to_display_path(p: str) -> str:
+    """
+    Rewrite a found path to the desired display prefix.
+    If we walked the UNC primary, swap that prefix for DISPLAY_PREFIX.
+    If we already walked M:, return as-is.
+    """
+    src = SEARCH_DIR_PRIMARY.rstrip("\\/").lower()
+    if p.lower().startswith(src):
+        suffix = p[len(src):]  # keep leading backslash in suffix if present
+        # Ensure we don't duplicate separators
+        return DISPLAY_PREFIX.rstrip("\\/") + suffix
+    return p
+
+
 def atomic_write_csv(path, rows):
     """Write CSV to a temp file and atomically replace the destination."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -49,7 +79,7 @@ def atomic_write_csv(path, rows):
         w = csv.writer(f)
         w.writerow(["Directory with Featurettes"])
         for r in rows:
-            w.writerow([r])
+            w.writerow([to_display_path(r)])
     os.replace(tmp, path)
 
 
@@ -71,6 +101,7 @@ def main():
         print("Another instance is writing the CSV right now. Exiting.")
         sys.exit(0)
 
+    msg = "Featurettes search finished."  # default for notify
     try:
         # Collect results (case-insensitive match for 'Featurettes')
         results = []
@@ -78,11 +109,12 @@ def main():
             if any(d.lower() == "featurettes" for d in dirs):
                 results.append(root)
 
-        # Write local CSV atomically
+        # Write local CSV atomically (paths mapped to DISPLAY_PREFIX)
         atomic_write_csv(output_csv, results)
 
         ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{ts}] Found {len(results)} directories with a 'Featurettes' subfolder.")
+        msg = f"[{ts}] Found {len(results)} directories with a 'Featurettes' subfolder."
+        print(msg)
         print(f"[{ts}] Wrote: {output_csv}")
 
         # Verify local file
@@ -94,14 +126,12 @@ def main():
         try:
             gdrive_parent = os.path.dirname(OUTPUT_GDRIVE)
             if gdrive_parent and os.path.exists(gdrive_parent):
-                # Write to a temp in the same directory for atomicity on that volume
                 tmp_g = OUTPUT_GDRIVE + ".tmp"
-                # Reuse already computed results; write directly to the mirror
                 with open(tmp_g, "w", newline="", encoding="utf-8") as f:
                     w = csv.writer(f)
                     w.writerow(["Directory with Featurettes"])
                     for r in results:
-                        w.writerow([r])
+                        w.writerow([to_display_path(r)])
                 os.replace(tmp_g, OUTPUT_GDRIVE)
                 gvr = verify_csv_rows(OUTPUT_GDRIVE)
                 if gvr is not None:
@@ -113,14 +143,17 @@ def main():
 
     finally:
         release_lock(LOCK_FILE)
+    notify("Featurette Directory Search", msg)
 
 
 if __name__ == "__main__":
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Scan started")
-    print(f"Primary: {SEARCH_DIR_PRIMARY}")
+    print(f"Primary:  {SEARCH_DIR_PRIMARY}")
     print(f"Fallback: {SEARCH_DIR_FALLBACK}")
-    print(f"Using:    {SEARCH_DIR_PRIMARY if os.path.exists(SEARCH_DIR_PRIMARY) else SEARCH_DIR_FALLBACK}")
-    print(f"Local out: {OUTPUT_LOCAL}")
-    print(f"GDrive:    {OUTPUT_GDRIVE}")
+    using = SEARCH_DIR_PRIMARY if os.path.exists(SEARCH_DIR_PRIMARY) else SEARCH_DIR_FALLBACK
+    print(f"Using:    {using}")
+    print(f"Display:  {DISPLAY_PREFIX}")
+    print(f"Local out:{OUTPUT_LOCAL}")
+    print(f"GDrive:   {OUTPUT_GDRIVE}")
     main()
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Done")

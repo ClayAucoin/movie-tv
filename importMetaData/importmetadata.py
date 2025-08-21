@@ -59,7 +59,7 @@ def log(msg, *, also_print=True):
 # Lock file (single instance)
 # ---------------------------
 
-LOCK_FILE = 'script.lock'
+LOCK_FILE = 'script-importmetadata.lock'
 if os.path.exists(LOCK_FILE):
     print("Another instance is already running. Exiting.", flush=True)
     sys.exit()
@@ -99,10 +99,10 @@ try:
     # ---------------------------
     log("=== Metadata extraction started ===")
     log(f"Working directory: {os.getcwd()}")
-    log(f"Target dir: {TARGET_DIR}")
-    log(f"Output CSV: {OUTPUT_CSV}")
-    log(f"Timing CSV: {TIMING_CSV}")
-    log(f"Cache file: {CACHE_FILE}")
+    # log(f"Target dir: {TARGET_DIR}")
+    # log(f"Output CSV: {OUTPUT_CSV}")
+    # log(f"Timing CSV: {TIMING_CSV}")
+    # log(f"Cache file: {CACHE_FILE}")
 
     # ---------------------------
     # Settings
