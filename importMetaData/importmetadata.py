@@ -34,6 +34,21 @@ def notify(title, message):
         pass
 
 
+# Map UNC root -> drive letter for CSV display
+UNC_ROOT = r"\\192.168.1.205\Media\Movies"
+M_ROOT = r"M:\Movies"
+
+
+def to_m_drive(p: str) -> str:
+    """Return M:\Movies\... for any path that begins with the UNC root; otherwise unchanged."""
+    # normalize only for comparison; preserve original slashes in output
+    if p.lower().startswith(UNC_ROOT.lower()):
+        suffix = p[len(UNC_ROOT):]  # keep the trailing \some\path
+        # ensure backslashes in output
+        return (M_ROOT + suffix).replace("/", "\\")
+    return p.replace("/", "\\")
+
+
 def ensure_dir(path):
     d = os.path.dirname(path)
     if d and not os.path.exists(d):
@@ -209,7 +224,7 @@ try:
 
             row = {
                 "Name of file": os.path.basename(path),
-                "Path of file": os.path.dirname(path),
+                "Path of file": to_m_drive(os.path.dirname(path)),          # display M:\Movies\... even when scanning with UNC
                 "Size Bytes": stat.st_size,
                 "Size KiB": round(stat.st_size / 1024, 2),
                 "Size GiB": round(stat.st_size / (1024 ** 3), 4),
