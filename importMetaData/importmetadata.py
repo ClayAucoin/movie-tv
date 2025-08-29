@@ -24,7 +24,6 @@ from datetime import datetime
 # Check if the script is running with the "/task_scheduler" argument
 is_task_scheduler = '/task_scheduler' in sys.argv
 
-
 def notify(title, message):
     try:
         if not is_task_scheduler:
@@ -33,33 +32,44 @@ def notify(title, message):
         # If not on Windows or GUI not available, ignore
         pass
 
-
-# Map UNC root -> drive letter for CSV display
+# ===============================================================
+# Map UNC root <-> drive letter (set these TWO consistently)
+# ===============================================================
+# EXAMPLE: main library
 UNC_ROOT = r"\\192.168.1.205\Media\Movies"
-M_ROOT = r"M:\Movies"
+M_ROOT   = r"M:\Movies"
 
+# TEST directory (your current scenario)
+# UNC_ROOT = r"\\192.168.1.205\Media\M-movie-Test-Dir-1"
+# M_ROOT   = r"M:\M-movie-Test-Dir-1"
 
 def to_m_drive(p: str) -> str:
-    """Return M:\Movies\... for any path that begins with the UNC root; otherwise unchanged."""
-    # normalize only for comparison; preserve original slashes in output
+    """Return M:\...\... for any path that begins with the UNC root; otherwise backslash-normalized."""
     if p.lower().startswith(UNC_ROOT.lower()):
-        suffix = p[len(UNC_ROOT):]  # keep the trailing \some\path
-        # ensure backslashes in output
+        suffix = p[len(UNC_ROOT):]
         return (M_ROOT + suffix).replace("/", "\\")
     return p.replace("/", "\\")
 
+def to_unc(p: str) -> str:
+    """Return UNC \\... for any path that begins with M:\...; otherwise backslash-normalized."""
+    if p.lower().startswith(M_ROOT.lower()):
+        suffix = p[len(M_ROOT):]
+        return (UNC_ROOT + suffix).replace("/", "\\")
+    return p.replace("/", "\\")
+
+def norm_rel(p: str) -> str:
+    """Canonicalize a relative path/key for stable comparisons (slashes + lower-case)."""
+    return os.path.normpath(p).replace('/', '\\').lower()
 
 def ensure_dir(path):
     d = os.path.dirname(path)
     if d and not os.path.exists(d):
         os.makedirs(d, exist_ok=True)
 
-
 def log_setup(output_csv):
     log_path = output_csv.replace(".csv", "_run.log")
     ensure_dir(output_csv)
     return log_path
-
 
 def log(msg, *, also_print=True):
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -73,12 +83,11 @@ def log(msg, *, also_print=True):
     if also_print:
         print(line, flush=True)
 
-
 # ---------------------------
 # Lock file (single instance)
 # ---------------------------
 
-LOCK_FILE = 'script-importmetadata.lock'
+LOCK_FILE = 'lock-importmetadata.lock'
 if os.path.exists(LOCK_FILE):
     print("Another instance is already running. Exiting.", flush=True)
     sys.exit()
@@ -93,23 +102,17 @@ try:
     if platform.system() == "Windows":
         OUTPUT_CSV = r"E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
 
-        # original directories
-        TARGET_DIR = r"\\192.168.1.205\Media\Movies"  # <-- replace with your share
-        M_LETTER = r"M:\Movies"
-        UNC_FALLBACK = r"\\192.168.1.205\Media\Movies"  # <-- replace
-
-        # testing directories
-        # TARGET_DIR = r"\\192.168.1.205\Media\Movie Test Dir 1"  # <-- replace with your share
-        # M_LETTER = r"M:\Movie Test Dir 1"
-        # UNC_FALLBACK = r"\\192.168.1.205\Media\Movie Test Dir 1"  # <-- replace
-
-        TARGET_DIR = M_LETTER if os.path.exists(M_LETTER) else UNC_FALLBACK
+        # Preferred walk root: mapped drive when available, else UNC
+        M_LETTER     = M_ROOT
+        UNC_FALLBACK = UNC_ROOT
+        WALK_ROOT    = M_LETTER if os.path.exists(M_LETTER) else UNC_FALLBACK
     else:
-        TARGET_DIR = r"/mnt/m/Movies/"
+        # Non-Windows fallback
+        WALK_ROOT  = r"/mnt/m/Movies/"
         OUTPUT_CSV = r"/mnt/c/Users/Administrator/Dropbox/movies_on_m"
 
     ensure_dir(OUTPUT_CSV)
-    LOG_FILE = log_setup(OUTPUT_CSV)
+    LOG_FILE   = log_setup(OUTPUT_CSV)
     TIMING_CSV = OUTPUT_CSV.replace(".csv", "_timing.csv")
     CACHE_FILE = OUTPUT_CSV.replace(".csv", "_cache.json")
 
@@ -118,15 +121,17 @@ try:
     # ---------------------------
     log("=== Metadata extraction started ===")
     log(f"Working directory: {os.getcwd()}")
-    # log(f"Target dir: {TARGET_DIR}")
-    # log(f"Output CSV: {OUTPUT_CSV}")
-    # log(f"Timing CSV: {TIMING_CSV}")
-    # log(f"Cache file: {CACHE_FILE}")
+    log(f"WALK_ROOT: {WALK_ROOT}")
+    log(f"M_ROOT exists:   {os.path.exists(M_ROOT)}")
+    log(f"UNC_ROOT exists: {os.path.exists(UNC_ROOT)}")
+    log(f"Output CSV: {OUTPUT_CSV}")
+    log(f"Timing CSV: {TIMING_CSV}")
+    log(f"Cache file: {CACHE_FILE}")
 
     # ---------------------------
     # Settings
     # ---------------------------
-    VIDEO_EXTS = ('.mp4', '.mkv', '.avi', '.mov', '.flv')
+    VIDEO_EXTS = ('.mp4', '.mkv', '.avi', '.mov', '.flv', '.m4v', '.m2ts', '.ts')
     FIELDS = [
         "Name of file", "Path of file", "Size Bytes", "Size KiB", "Size GiB", "File Type",
         "Movie BR", "Audio BR", "Audio Channels", "Audio Tracks", "Movie Name", "Collection",
@@ -141,8 +146,6 @@ try:
     # Locate mediainfo
     # ---------------------------
     MEDIAINFO = r"C:\Tools\MediaInfo\mediainfo.exe"  # <-- set to your actual path
-    # MEDIAINFO = os.environ.get("MEDIAINFO_PATH") or MEDIAINFO  # optional env override
-
     try:
         _chk = subprocess.run(
             [MEDIAINFO, "--Version"],
@@ -163,25 +166,30 @@ try:
 
     # ---------------------------
     # Load cache & existing CSV
+    #   NOTE: Cache keys will be normalized (lower+backslash) and are ALWAYS relative to UNC_ROOT
     # ---------------------------
     file_cache = {}
     if os.path.exists(CACHE_FILE):
         try:
             with open(CACHE_FILE, 'r', encoding='utf-8') as f:
-                file_cache = json.load(f)
+                raw = json.load(f)
+            # normalize keys on load
+            file_cache = {norm_rel(k): v for k, v in raw.items()}
         except Exception as e:
             log(f"Cache load error: {e} (continuing with empty cache)")
 
-    # prune deleted
+    # prune deleted (using UNC paths consistently)
     verified_cache = {}
+    deleted_relpaths = set()  # normalized keys
     delCount = 0
-    for rel_path, sig in file_cache.items():
-        full_path = os.path.join(TARGET_DIR, rel_path)
-        if os.path.exists(full_path):
-            verified_cache[rel_path] = sig
+    for rel_key_norm, sig in file_cache.items():
+        full_path_unc = os.path.join(UNC_ROOT, rel_key_norm)
+        if os.path.exists(full_path_unc):
+            verified_cache[rel_key_norm] = sig
         else:
             delCount += 1
-            log(f"[DELETED] [{delCount}] {rel_path} no longer exists")
+            deleted_relpaths.add(rel_key_norm)
+            log(f"[DELETED] [{delCount}] {rel_key_norm} no longer exists (UNC check)")
     file_cache = verified_cache
 
     existing_rows = []
@@ -195,40 +203,39 @@ try:
         except Exception as e:
             log(f"Error reading existing CSV: {e}")
 
-
     # ---------------------------
     # Extraction helpers
     # ---------------------------
-    def extract_metadata_cli(path, rel_path, stat, start_time):
+    def extract_metadata_cli(path_abs, rel_key_norm, stat, start_time):
         try:
             result = subprocess.run(
-                [MEDIAINFO, '--Output=JSON', path],
+                [MEDIAINFO, '--Output=JSON', path_abs],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 encoding='utf-8',
-                # timeout=20,
+                # timeout=20,  # no timeout to avoid skipping
                 creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
             )
 
             if result.returncode != 0 or not result.stdout.strip():
-                log(f"[mediainfo ERROR] {os.path.basename(path)} rc={result.returncode} stderr={result.stderr.strip()}")
+                log(f"[mediainfo ERROR] {os.path.basename(path_abs)} rc={result.returncode} stderr={result.stderr.strip()}")
                 return None, None, None
 
             try:
                 data = json.loads(result.stdout)
             except Exception as je:
-                log(f"[JSON ERROR] {os.path.basename(path)} — {je}. STDERR: {result.stderr.strip()}")
+                log(f"[JSON ERROR] {os.path.basename(path_abs)} — {je}. STDERR: {result.stderr.strip()}")
                 return None, None, None
 
             tracks = data.get("media", {}).get("track", [])
 
             row = {
-                "Name of file": os.path.basename(path),
-                "Path of file": to_m_drive(os.path.dirname(path)),          # display M:\Movies\... even when scanning with UNC
+                "Name of file": os.path.basename(path_abs),
+                "Path of file": to_m_drive(os.path.dirname(path_abs)),  # display M: even when scanning UNC
                 "Size Bytes": stat.st_size,
                 "Size KiB": round(stat.st_size / 1024, 2),
                 "Size GiB": round(stat.st_size / (1024 ** 3), 4),
-                "File Type": os.path.splitext(path)[1].lstrip('.'),
+                "File Type": os.path.splitext(path_abs)[1].lstrip('.'),
                 "Movie BR": "", "Audio BR": "", "Audio Channels": "",
                 "Audio Tracks": "", "Movie Name": "", "Collection": "",
                 "Genre": "", "Edition": "", "Director": "", "IMDB ID": "",
@@ -263,7 +270,6 @@ try:
                                 row["Chapters"] = ""
 
                 elif ttype == 'Video':
-                    # Build "mini JSON" for video
                     subset = {}
                     for k in ("@type", "StreamOrder", "ID", "Format", "Format_Level",
                               "HDR_Format_Compatibility", "CodecID", "BitRate", "Width",
@@ -281,7 +287,6 @@ try:
                             pass
 
                 elif ttype == 'Audio':
-                    # Build "mini JSON" for audio
                     subset = {}
                     for k in ("@type", "@typeorder", "StreamOrder", "ID", "Format",
                               "Format_Commercial_IfAny", "CodecID", "BitRate", "Channels",
@@ -337,18 +342,18 @@ try:
                 [t.get("Title", "") for t in tracks if t.get("@type") == "Audio" and t.get("Title")]
             )
 
-            return rel_path, row, time.time() - start_time
+            return rel_key_norm, row, time.time() - start_time
 
         except Exception as e:
-            log(f"[ERROR] {os.path.basename(path)} — {e}")
+            log(f"[ERROR] {os.path.basename(path_abs)} — {e}")
             return None, None, None
-
 
     # ---------------------------
     # Gather files to process
     # ---------------------------
     files_to_process = []
-    for root, _, files in os.walk(TARGET_DIR):
+    scanned_media = 0  # how many media files we *saw* regardless of cache
+    for root, _, files in os.walk(WALK_ROOT):
         if any(kw.lower() in root.lower() for kw in EXCLUDE_DIR_KEYWORDS):
             continue
         for fname in files:
@@ -356,20 +361,29 @@ try:
                 continue
             if not fname.lower().endswith(VIDEO_EXTS):
                 continue
-            path = os.path.join(root, fname)
-            rel_path = os.path.relpath(path, TARGET_DIR)
-            try:
-                stat = os.stat(path)
-            except FileNotFoundError:
-                log(f"[SKIP] File vanished: {path}")
-                continue
-            sig = {"size": stat.st_size, "mtime": stat.st_mtime}
-            if rel_path in file_cache and file_cache[rel_path] == sig:
-                continue
-            files_to_process.append((path, rel_path, stat))
 
-    # log(f"Discovered {len(files_to_process)} files to process")
-    log(f"Discovered {len(files_to_process)} files to process in: {TARGET_DIR}")
+            scanned_media += 1
+            path_abs = os.path.join(root, fname)
+            path_unc = to_unc(path_abs)  # ensure UNC base for keys
+            try:
+                rel_key = os.path.relpath(path_unc, UNC_ROOT)
+            except Exception:
+                rel_key = path_unc  # fallback absolute
+            rel_key_norm = norm_rel(rel_key)
+
+            try:
+                stat = os.stat(path_abs)
+            except FileNotFoundError:
+                log(f"[SKIP] File vanished: {path_abs}")
+                continue
+
+            sig = {"size": stat.st_size, "mtime": stat.st_mtime}
+            if rel_key_norm in file_cache and file_cache[rel_key_norm] == sig:
+                continue  # unchanged
+            files_to_process.append((path_abs, rel_key_norm, stat))
+
+    log(f"Scanned media files seen (by extension): {scanned_media}")
+    log(f"Discovered {len(files_to_process)} files to process in: {WALK_ROOT}")
     if not files_to_process:
         log("No new files or any changed files.")
 
@@ -386,14 +400,14 @@ try:
         max_workers = min(8, max(1, os.cpu_count() or 4))
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {
-                executor.submit(extract_metadata_cli, p, r, s, time.time()): (p, r)
-                for p, r, s in files_to_process
+                executor.submit(extract_metadata_cli, p, rkey, s, time.time()): (p, rkey)
+                for p, rkey, s in files_to_process
             }
             for i, future in enumerate(concurrent.futures.as_completed(futures), 1):
-                rel_path, row, duration = future.result()
+                rel_key_norm, row, duration = future.result()
                 if row:
                     updated_rows.append(row)
-                    file_cache[rel_path] = {"size": row["Size Bytes"], "mtime": row["Modified Time"]}
+                    file_cache[rel_key_norm] = {"size": row["Size Bytes"], "mtime": row["Modified Time"]}
                     total_elapsed = time.time() - start_time
                     time_writer.writerow({
                         "Filename": row["Name of file"],
@@ -409,21 +423,28 @@ try:
 
     final_rows = {}
     missing_but_kept = 0
+
     for row in all_rows:
-        # Build a stable rel_path key relative to the TARGET_DIR we actually walked
-        abs_path = os.path.join(row["Path of file"], row["Name of file"])
+        # CSV stores "Path of file" as M:\...\..., so convert to UNC then compute rel to UNC_ROOT
+        abs_display = os.path.join(row["Path of file"], row["Name of file"])
+        abs_unc = to_unc(abs_display)
+
         try:
-            rel_path = os.path.relpath(abs_path, TARGET_DIR)
+            rel_key = os.path.relpath(abs_unc, UNC_ROOT)
         except Exception:
-            # If relpath fails due to path base mismatch, just use the absolute path as key
-            rel_path = os.path.normpath(abs_path)
+            rel_key = abs_unc  # fallback absolute (rare)
 
-        # Only drop rows if we *know* the file was deleted (we already pruned the cache above).
-        # Don't rely on os.path.exists here—under Task Scheduler that can lie due to session creds.
-        if not os.path.exists(abs_path):
-            missing_but_kept += 1  # keep it anyway to avoid header-only CSVs
+        rel_key_norm = norm_rel(rel_key)
 
-        final_rows[rel_path] = row  # last write wins for dedupe
+        # If we *know* the file was deleted (from cache prune), drop it from CSV no matter what
+        if rel_key_norm in deleted_relpaths:
+            continue
+
+        # Otherwise keep the row (even if not visible to this session) to avoid header-only CSVs
+        if not os.path.exists(abs_unc):
+            missing_but_kept += 1
+
+        final_rows[rel_key_norm] = row  # last write wins
 
     if missing_but_kept:
         log(f"Note: {missing_but_kept} files not visible to this session (kept in CSV).")
@@ -439,6 +460,7 @@ try:
         with open(OUTPUT_CSV, newline='', encoding='utf-8') as f:
             row_count = sum(1 for _ in f)
         log(f"Verify: wrote {max(0, row_count - 1)} data rows to CSV.")
+        log(f"Pruned {len(deleted_relpaths)} definitively deleted rows from CSV (normalized match).")
     except Exception as e:
         log(f"Verify: could not reopen CSV for count — {e}")
 
