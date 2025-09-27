@@ -3,7 +3,7 @@ python "C:/Users/Administrator/projects/movie-tv/importMetaData/importfeaturette
 
     TARGET_DIR = r"M:/Movie Test Dir 1/"
     TARGET_DIR = r"M:/Movies/"
-
+M-MovieTest-Dir
 """
 
 import os
@@ -43,7 +43,7 @@ M_ROOT = r"M:\Movies"
 
 # TEST directory (your current scenario)
 # UNC_ROOT = r"\\192.168.1.205\Media\M-movie-Test-Dir-1"
-# M_ROOT   = r"M:\M-movie-Test-Dir-1"
+# M_ROOT = r"M:\M-movie-Test-Dir-1"
 
 
 def to_m_drive(p: str) -> str:
@@ -170,6 +170,7 @@ try:
     ]
     EXCLUDE_KEYWORDS = ["featurette", "trailer", "sample", "behind the scenes"]
     EXCLUDE_DIR_KEYWORDS = ["Featurettes", "trailer", "sample", "behind the scenes"]
+    parent_imdb_cache = {}
 
     # ---------------------------
     # Locate mediainfo
@@ -237,6 +238,62 @@ try:
             log(f"Loaded {len(existing_rows)} existing rows from CSV")
         except Exception as e:
             log(f"Error reading existing CSV: {e}")
+
+    def imdb_from_parent_dir(featurettes_dir):
+        """Find IMDB ID by scanning the parent directory (one level up from Featurettes)."""
+        parent_dir = os.path.dirname(featurettes_dir)
+        if not parent_dir or not os.path.isdir(parent_dir):
+            return ""
+
+        key = norm_rel(parent_dir)
+        if key in parent_imdb_cache:
+            return parent_imdb_cache[key]
+
+        try:
+            # Only look at video files in the parent directory (not subdirs)
+            candidates = [
+                f for f in os.listdir(parent_dir) if f.lower().endswith(VIDEO_EXTS)
+            ]
+        except Exception:
+            candidates = []
+
+        # Heuristic: pick the largest non-“featurette” file as the main movie
+        best_path, best_size = "", -1
+        for fname in candidates:
+            p = os.path.join(parent_dir, fname)
+            try:
+                st = os.stat(p)
+            except Exception:
+                continue
+            if st.st_size > best_size and "featurette" not in fname.lower():
+                best_path, best_size = p, st.st_size
+
+        imdb = ""
+        if best_path:
+            try:
+                res = subprocess.run(
+                    [MEDIAINFO, "--Output=JSON", best_path],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    encoding="utf-8",
+                    creationflags=subprocess.CREATE_NO_WINDOW
+                    if platform.system() == "Windows"
+                    else 0,
+                )
+                if res.returncode == 0 and res.stdout.strip():
+                    data = json.loads(res.stdout)
+                    tracks = data.get("media", {}).get("track", [])
+                    for t in tracks:
+                        if t.get("@type") == "General":
+                            imdb = t.get("InternetMovieDatabase", "") or t.get(
+                                "extra", {}
+                            ).get("IMDB_ID", "")
+                            break
+            except Exception:
+                pass
+
+        parent_imdb_cache[key] = imdb or ""
+        return imdb or ""
 
     # ---------------------------
     # Extraction helpers
@@ -453,6 +510,13 @@ try:
                     if t.get("@type") == "Audio" and t.get("Title")
                 ]
             )
+
+            # If this file is in a Featurettes folder and IMDB is missing, inherit from the parent directory
+            dirpath = os.path.dirname(path_abs)
+            if "featurettes" in dirpath.lower() and not row["IMDB ID"]:
+                inherited = imdb_from_parent_dir(dirpath)
+                if inherited:
+                    row["IMDB ID"] = inherited
 
             return rel_key_norm, row, time.time() - start_time
 
