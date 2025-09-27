@@ -1,5 +1,5 @@
 """
-python "C:/Users/Administrator/projects/movie-tv/importMetaData/importmetadata.py"
+python "C:/Users/Administrator/projects/movie-tv/importMetaData/movies/importmetadata.py"
 
     TARGET_DIR = r"M:/Movie Test Dir 1/"
     TARGET_DIR = r"M:/Movies/"
@@ -22,7 +22,8 @@ from datetime import datetime
 # ---------------------------
 
 # Check if the script is running with the "/task_scheduler" argument
-is_task_scheduler = '/task_scheduler' in sys.argv
+is_task_scheduler = "/task_scheduler" in sys.argv
+
 
 def notify(title, message):
     try:
@@ -32,44 +33,51 @@ def notify(title, message):
         # If not on Windows or GUI not available, ignore
         pass
 
+
 # ===============================================================
 # Map UNC root <-> drive letter (set these TWO consistently)
 # ===============================================================
 # EXAMPLE: main library
 UNC_ROOT = r"\\192.168.1.205\Media\Movies"
-M_ROOT   = r"M:\Movies"
+M_ROOT = r"M:\Movies"
 
 # TEST directory (your current scenario)
 # UNC_ROOT = r"\\192.168.1.205\Media\M-movie-Test-Dir-1"
 # M_ROOT   = r"M:\M-movie-Test-Dir-1"
 
+
 def to_m_drive(p: str) -> str:
     """Return M:\...\... for any path that begins with the UNC root; otherwise backslash-normalized."""
     if p.lower().startswith(UNC_ROOT.lower()):
-        suffix = p[len(UNC_ROOT):]
+        suffix = p[len(UNC_ROOT) :]
         return (M_ROOT + suffix).replace("/", "\\")
     return p.replace("/", "\\")
+
 
 def to_unc(p: str) -> str:
     """Return UNC \\... for any path that begins with M:\...; otherwise backslash-normalized."""
     if p.lower().startswith(M_ROOT.lower()):
-        suffix = p[len(M_ROOT):]
+        suffix = p[len(M_ROOT) :]
         return (UNC_ROOT + suffix).replace("/", "\\")
     return p.replace("/", "\\")
 
+
 def norm_rel(p: str) -> str:
     """Canonicalize a relative path/key for stable comparisons (slashes + lower-case)."""
-    return os.path.normpath(p).replace('/', '\\').lower()
+    return os.path.normpath(p).replace("/", "\\").lower()
+
 
 def ensure_dir(path):
     d = os.path.dirname(path)
     if d and not os.path.exists(d):
         os.makedirs(d, exist_ok=True)
 
+
 def log_setup(output_csv):
     log_path = output_csv.replace(".csv", "_run.log")
     ensure_dir(output_csv)
     return log_path
+
 
 def log(msg, *, also_print=True):
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -83,16 +91,17 @@ def log(msg, *, also_print=True):
     if also_print:
         print(line, flush=True)
 
+
 # ---------------------------
 # Lock file (single instance)
 # ---------------------------
 
-LOCK_FILE = 'lock-importmetadata.lock'
+LOCK_FILE = "lock-importmetadata.lock"
 if os.path.exists(LOCK_FILE):
     print("Another instance is already running. Exiting.", flush=True)
     sys.exit()
 
-with open(LOCK_FILE, 'w') as f:
+with open(LOCK_FILE, "w") as f:
     f.write(str(os.getpid()))
 
 try:
@@ -103,16 +112,16 @@ try:
         OUTPUT_CSV = r"E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
 
         # Preferred walk root: mapped drive when available, else UNC
-        M_LETTER     = M_ROOT
+        M_LETTER = M_ROOT
         UNC_FALLBACK = UNC_ROOT
-        WALK_ROOT    = M_LETTER if os.path.exists(M_LETTER) else UNC_FALLBACK
+        WALK_ROOT = M_LETTER if os.path.exists(M_LETTER) else UNC_FALLBACK
     else:
         # Non-Windows fallback
-        WALK_ROOT  = r"/mnt/m/Movies/"
+        WALK_ROOT = r"/mnt/m/Movies/"
         OUTPUT_CSV = r"/mnt/c/Users/Administrator/Dropbox/movies_on_m"
 
     ensure_dir(OUTPUT_CSV)
-    LOG_FILE   = log_setup(OUTPUT_CSV)
+    LOG_FILE = log_setup(OUTPUT_CSV)
     TIMING_CSV = OUTPUT_CSV.replace(".csv", "_timing.csv")
     CACHE_FILE = OUTPUT_CSV.replace(".csv", "_cache.json")
 
@@ -131,13 +140,31 @@ try:
     # ---------------------------
     # Settings
     # ---------------------------
-    VIDEO_EXTS = ('.mp4', '.mkv', '.avi', '.mov', '.flv', '.m4v', '.m2ts', '.ts')
+    VIDEO_EXTS = (".mp4", ".mkv", ".avi", ".mov", ".flv", ".m4v", ".m2ts", ".ts")
     FIELDS = [
-        "Name of file", "Path of file", "Size Bytes", "Size KiB", "Size GiB", "File Type",
-        "Movie BR", "Audio BR", "Audio Channels", "Audio Tracks", "Movie Name", "Collection",
-        "Genre", "Edition", "Director", "IMDB ID", "Modified Time",
-        "Video Track Titles", "Audio Track Titles",
-        "Video Tracks", "Audio Tracks JSON", "Sub Titles", "Chapters"
+        "Name of file",
+        "Path of file",
+        "Size Bytes",
+        "Size KiB",
+        "Size GiB",
+        "File Type",
+        "Movie BR",
+        "Audio BR",
+        "Audio Channels",
+        "Audio Tracks",
+        "Movie Name",
+        "Collection",
+        "Genre",
+        "Edition",
+        "Director",
+        "IMDB ID",
+        "Modified Time",
+        "Video Track Titles",
+        "Audio Track Titles",
+        "Video Tracks",
+        "Audio Tracks JSON",
+        "Sub Titles",
+        "Chapters",
     ]
     EXCLUDE_KEYWORDS = ["featurette", "trailer", "sample", "behind the scenes"]
     EXCLUDE_DIR_KEYWORDS = ["Featurettes", "trailer", "sample", "behind the scenes"]
@@ -153,13 +180,19 @@ try:
             stderr=subprocess.PIPE,
             encoding="utf-8",
             timeout=5,
-            creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
+            creationflags=subprocess.CREATE_NO_WINDOW
+            if platform.system() == "Windows"
+            else 0,
         )
         if _chk.returncode != 0:
-            log(f"Warning: mediainfo returned code {_chk.returncode}. stderr={_chk.stderr.strip()}")
+            log(
+                f"Warning: mediainfo returned code {_chk.returncode}. stderr={_chk.stderr.strip()}"
+            )
     except FileNotFoundError:
-        msg = ("mediainfo CLI not found. Install it or set MEDIAINFO_PATH env var to full path, "
-               "e.g., C:\\Tools\\MediaInfo\\mediainfo.exe")
+        msg = (
+            "mediainfo CLI not found. Install it or set MEDIAINFO_PATH env var to full path, "
+            "e.g., C:\\Tools\\MediaInfo\\mediainfo.exe"
+        )
         log(msg)
         notify("Metadata Script", msg)
         raise
@@ -171,7 +204,7 @@ try:
     file_cache = {}
     if os.path.exists(CACHE_FILE):
         try:
-            with open(CACHE_FILE, 'r', encoding='utf-8') as f:
+            with open(CACHE_FILE, "r", encoding="utf-8") as f:
                 raw = json.load(f)
             # normalize keys on load
             file_cache = {norm_rel(k): v for k, v in raw.items()}
@@ -195,7 +228,7 @@ try:
     existing_rows = []
     if os.path.exists(OUTPUT_CSV):
         try:
-            with open(OUTPUT_CSV, 'r', encoding='utf8', newline='') as f:
+            with open(OUTPUT_CSV, "r", encoding="utf8", newline="") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                     existing_rows.append(row)
@@ -209,40 +242,58 @@ try:
     def extract_metadata_cli(path_abs, rel_key_norm, stat, start_time):
         try:
             result = subprocess.run(
-                [MEDIAINFO, '--Output=JSON', path_abs],
+                [MEDIAINFO, "--Output=JSON", path_abs],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                encoding='utf-8',
+                encoding="utf-8",
                 # timeout=20,  # no timeout to avoid skipping
-                creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
+                creationflags=subprocess.CREATE_NO_WINDOW
+                if platform.system() == "Windows"
+                else 0,
             )
 
             if result.returncode != 0 or not result.stdout.strip():
-                log(f"[mediainfo ERROR] {os.path.basename(path_abs)} rc={result.returncode} stderr={result.stderr.strip()}")
+                log(
+                    f"[mediainfo ERROR] {os.path.basename(path_abs)} rc={result.returncode} stderr={result.stderr.strip()}"
+                )
                 return None, None, None
 
             try:
                 data = json.loads(result.stdout)
             except Exception as je:
-                log(f"[JSON ERROR] {os.path.basename(path_abs)} — {je}. STDERR: {result.stderr.strip()}")
+                log(
+                    f"[JSON ERROR] {os.path.basename(path_abs)} — {je}. STDERR: {result.stderr.strip()}"
+                )
                 return None, None, None
 
             tracks = data.get("media", {}).get("track", [])
 
             row = {
                 "Name of file": os.path.basename(path_abs),
-                "Path of file": to_m_drive(os.path.dirname(path_abs)),  # display M: even when scanning UNC
+                "Path of file": to_m_drive(
+                    os.path.dirname(path_abs)
+                ),  # display M: even when scanning UNC
                 "Size Bytes": stat.st_size,
                 "Size KiB": round(stat.st_size / 1024, 2),
-                "Size GiB": round(stat.st_size / (1024 ** 3), 4),
-                "File Type": os.path.splitext(path_abs)[1].lstrip('.'),
-                "Movie BR": "", "Audio BR": "", "Audio Channels": "",
-                "Audio Tracks": "", "Movie Name": "", "Collection": "",
-                "Genre": "", "Edition": "", "Director": "", "IMDB ID": "",
+                "Size GiB": round(stat.st_size / (1024**3), 4),
+                "File Type": os.path.splitext(path_abs)[1].lstrip("."),
+                "Movie BR": "",
+                "Audio BR": "",
+                "Audio Channels": "",
+                "Audio Tracks": "",
+                "Movie Name": "",
+                "Collection": "",
+                "Genre": "",
+                "Edition": "",
+                "Director": "",
+                "IMDB ID": "",
                 "Modified Time": float(stat.st_mtime),
-                "Video Track Titles": "", "Audio Track Titles": "",
-                "Video Tracks": "", "Audio Tracks JSON": "",
-                "Sub Titles": "", "Chapters": ""
+                "Video Track Titles": "",
+                "Audio Track Titles": "",
+                "Video Tracks": "",
+                "Audio Tracks JSON": "",
+                "Sub Titles": "",
+                "Chapters": "",
             }
 
             video_tracks, audio_tracks, text_tracks = [], [], []
@@ -250,31 +301,55 @@ try:
             details = []
 
             for track in tracks:
-                ttype = track.get('@type')
+                ttype = track.get("@type")
 
-                if ttype == 'General':
+                if ttype == "General":
                     row["Movie Name"] = track.get("Movie", "") or track.get("Title", "")
                     extra = track.get("extra", {})
-                    row["Collection"] = track.get("Law rating", "") or extra.get("LAW_RATING", "")
+                    row["Collection"] = track.get("Law rating", "") or extra.get(
+                        "LAW_RATING", ""
+                    )
                     row["Genre"] = track.get("Genre", "") or extra.get("GENRE", "")
-                    row["Edition"] = track.get("Composer", "") or extra.get("COMPOSER", "")
-                    row["Director"] = track.get("Director", "") or extra.get("DIRECTOR", "")
-                    row["IMDB ID"] = track.get("InternetMovieDatabase", "") or extra.get("IMDB_ID", "")
+                    row["Edition"] = track.get("Composer", "") or extra.get(
+                        "COMPOSER", ""
+                    )
+                    row["Director"] = track.get("Director", "") or extra.get(
+                        "DIRECTOR", ""
+                    )
+                    row["IMDB ID"] = track.get(
+                        "InternetMovieDatabase", ""
+                    ) or extra.get("IMDB_ID", "")
 
                     # Chapters (Menu.extra)
                     for t in tracks:
-                        if t.get('@type') == "Menu" and "extra" in t:
+                        if t.get("@type") == "Menu" and "extra" in t:
                             try:
-                                row["Chapters"] = json.dumps({"@type": "Menu", "extra": t["extra"]}, ensure_ascii=False)
+                                row["Chapters"] = json.dumps(
+                                    {"@type": "Menu", "extra": t["extra"]},
+                                    ensure_ascii=False,
+                                )
                             except Exception:
                                 row["Chapters"] = ""
 
-                elif ttype == 'Video':
+                elif ttype == "Video":
                     subset = {}
-                    for k in ("@type", "StreamOrder", "ID", "Format", "Format_Level",
-                              "HDR_Format_Compatibility", "CodecID", "BitRate", "Width",
-                              "Height", "DisplayAspectRatio", "Title", "Language",
-                              "Default", "Forced"):
+                    for k in (
+                        "@type",
+                        "StreamOrder",
+                        "ID",
+                        "Format",
+                        "Format_Level",
+                        "HDR_Format_Compatibility",
+                        "CodecID",
+                        "BitRate",
+                        "Width",
+                        "Height",
+                        "DisplayAspectRatio",
+                        "Title",
+                        "Language",
+                        "Default",
+                        "Forced",
+                    ):
                         if k in track:
                             subset[k] = track[k]
                     video_tracks.append(subset)
@@ -286,13 +361,29 @@ try:
                         except Exception:
                             pass
 
-                elif ttype == 'Audio':
+                elif ttype == "Audio":
                     subset = {}
-                    for k in ("@type", "@typeorder", "StreamOrder", "ID", "Format",
-                              "Format_Commercial_IfAny", "CodecID", "BitRate", "Channels",
-                              "ChannelPositions", "ChannelLayout", "SamplingRate",
-                              "Compression_Mode", "Delay", "Video_Delay", "Title",
-                              "Language", "Default", "Forced"):
+                    for k in (
+                        "@type",
+                        "@typeorder",
+                        "StreamOrder",
+                        "ID",
+                        "Format",
+                        "Format_Commercial_IfAny",
+                        "CodecID",
+                        "BitRate",
+                        "Channels",
+                        "ChannelPositions",
+                        "ChannelLayout",
+                        "SamplingRate",
+                        "Compression_Mode",
+                        "Delay",
+                        "Video_Delay",
+                        "Title",
+                        "Language",
+                        "Default",
+                        "Forced",
+                    ):
                         if k in track:
                             subset[k] = track[k]
                     audio_tracks.append(subset)
@@ -308,7 +399,9 @@ try:
                     except Exception:
                         pass
 
-                    detail = ' '.join(filter(None, [lang, f"{ch}ch" if ch else "", fmt, br_kbps]))
+                    detail = " ".join(
+                        filter(None, [lang, f"{ch}ch" if ch else "", fmt, br_kbps])
+                    )
                     if ch:
                         channel_counts.append(str(ch))
                     if detail.strip():
@@ -319,27 +412,44 @@ try:
                         except Exception:
                             pass
 
-                elif ttype == 'Text':
+                elif ttype == "Text":
                     subset = {}
-                    for k in ("@type", "@typeorder", "StreamOrder", "ID", "Format", "CodecID",
-                              "Language", "Default", "Forced"):
+                    for k in (
+                        "@type",
+                        "@typeorder",
+                        "StreamOrder",
+                        "ID",
+                        "Format",
+                        "CodecID",
+                        "Language",
+                        "Default",
+                        "Forced",
+                    ):
                         if k in track:
                             subset[k] = track[k]
                     text_tracks.append(subset)
 
             # Finalize computed fields
-            row["Audio Channels"] = '+'.join(channel_counts)
-            row["Audio Tracks"] = '; '.join(details)
+            row["Audio Channels"] = "+".join(channel_counts)
+            row["Audio Tracks"] = "; ".join(details)
             row["Video Tracks"] = json.dumps(video_tracks, ensure_ascii=False)
             row["Audio Tracks JSON"] = json.dumps(audio_tracks, ensure_ascii=False)
             row["Sub Titles"] = json.dumps(text_tracks, ensure_ascii=False)
 
             # Titles
             row["Video Track Titles"] = ", ".join(
-                [t.get("Title", "") for t in tracks if t.get("@type") == "Video" and t.get("Title")]
+                [
+                    t.get("Title", "")
+                    for t in tracks
+                    if t.get("@type") == "Video" and t.get("Title")
+                ]
             )
             row["Audio Track Titles"] = ", ".join(
-                [t.get("Title", "") for t in tracks if t.get("@type") == "Audio" and t.get("Title")]
+                [
+                    t.get("Title", "")
+                    for t in tracks
+                    if t.get("@type") == "Audio" and t.get("Title")
+                ]
             )
 
             return rel_key_norm, row, time.time() - start_time
@@ -393,28 +503,40 @@ try:
     start_time = time.time()
     updated_rows = []
     ensure_dir(TIMING_CSV)
-    with open(TIMING_CSV, 'w', newline='', encoding='utf8') as tf:
-        time_writer = csv.DictWriter(tf, fieldnames=["Filename", "File Time (s)", "Total Elapsed (s)"])
+    with open(TIMING_CSV, "w", newline="", encoding="utf8") as tf:
+        time_writer = csv.DictWriter(
+            tf, fieldnames=["Filename", "File Time (s)", "Total Elapsed (s)"]
+        )
         time_writer.writeheader()
 
         max_workers = min(8, max(1, os.cpu_count() or 4))
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {
-                executor.submit(extract_metadata_cli, p, rkey, s, time.time()): (p, rkey)
+                executor.submit(extract_metadata_cli, p, rkey, s, time.time()): (
+                    p,
+                    rkey,
+                )
                 for p, rkey, s in files_to_process
             }
             for i, future in enumerate(concurrent.futures.as_completed(futures), 1):
                 rel_key_norm, row, duration = future.result()
                 if row:
                     updated_rows.append(row)
-                    file_cache[rel_key_norm] = {"size": row["Size Bytes"], "mtime": row["Modified Time"]}
+                    file_cache[rel_key_norm] = {
+                        "size": row["Size Bytes"],
+                        "mtime": row["Modified Time"],
+                    }
                     total_elapsed = time.time() - start_time
-                    time_writer.writerow({
-                        "Filename": row["Name of file"],
-                        "File Time (s)": f"{duration:.2f}",
-                        "Total Elapsed (s)": f"{total_elapsed:.2f}"
-                    })
-                    log(f"[{len(updated_rows)}] {duration:.2f}s — {row['Name of file']}")
+                    time_writer.writerow(
+                        {
+                            "Filename": row["Name of file"],
+                            "File Time (s)": f"{duration:.2f}",
+                            "Total Elapsed (s)": f"{total_elapsed:.2f}",
+                        }
+                    )
+                    log(
+                        f"[{len(updated_rows)}] {duration:.2f}s — {row['Name of file']}"
+                    )
 
     # ---------------------------
     # Merge, write CSV, save cache
@@ -447,24 +569,28 @@ try:
         final_rows[rel_key_norm] = row  # last write wins
 
     if missing_but_kept:
-        log(f"Note: {missing_but_kept} files not visible to this session (kept in CSV).")
+        log(
+            f"Note: {missing_but_kept} files not visible to this session (kept in CSV)."
+        )
 
     ensure_dir(OUTPUT_CSV)
-    with open(OUTPUT_CSV, 'w', newline='', encoding='utf8') as f:
+    with open(OUTPUT_CSV, "w", newline="", encoding="utf8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
         writer.writeheader()
         for row in sorted(final_rows.values(), key=lambda r: r["Name of file"]):
             writer.writerow(row)
 
     try:
-        with open(OUTPUT_CSV, newline='', encoding='utf-8') as f:
+        with open(OUTPUT_CSV, newline="", encoding="utf-8") as f:
             row_count = sum(1 for _ in f)
         log(f"Verify: wrote {max(0, row_count - 1)} data rows to CSV.")
-        log(f"Pruned {len(deleted_relpaths)} definitively deleted rows from CSV (normalized match).")
+        log(
+            f"Pruned {len(deleted_relpaths)} definitively deleted rows from CSV (normalized match)."
+        )
     except Exception as e:
         log(f"Verify: could not reopen CSV for count — {e}")
 
-    with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+    with open(CACHE_FILE, "w", encoding="utf-8") as f:
         json.dump(file_cache, f, indent=2)
 
     total_time = time.time() - start_time
