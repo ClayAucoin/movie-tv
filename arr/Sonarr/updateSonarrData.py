@@ -9,12 +9,15 @@ import ctypes
 
 import os, sys
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # .../movie-tv
+PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(__file__))
+)  # .../movie-tv
 sys.path.append(PROJECT_ROOT)
 from arr.config.config import SONARR_URL, SONARR_API_KEY, SONARR_API_URL
 
 # Check if the script is running with the "/task_scheduler" argument
-is_task_scheduler = '/task_scheduler' in sys.argv
+is_task_scheduler = "/task_scheduler" in sys.argv
+
 
 def notify(title, message):
     try:
@@ -24,6 +27,7 @@ def notify(title, message):
         # If not on Windows or GUI not available, ignore
         pass
 
+
 # Determine file path based on the operating system
 if platform.system() == "Windows":
     CSV_FILE_PATH = "E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/sonarr.csv"
@@ -31,6 +35,7 @@ else:
     CSV_FILE_PATH = "/mnt/E/MY DRIVE/__clay0aucoin@gmail.com/movies_on_m/sonarr.csv"  # Dropbox Linux/WSL Path
 
 print(f"Using CSV file path: {CSV_FILE_PATH}")
+
 
 def get_series_data():
     """Fetches series data from Sonarr API."""
@@ -51,7 +56,9 @@ def extract_airing_day(airing_time):
     if airing_time:
         try:
             airing_datetime = datetime.strptime(airing_time, "%Y-%m-%dT%H:%M:%SZ")
-            airing_day = airing_datetime.strftime("%A")  # Get full weekday name (e.g., "Monday")
+            airing_day = airing_datetime.strftime(
+                "%A"
+            )  # Get full weekday name (e.g., "Monday")
             return airing_day
         except ValueError as e:
             print(f"Error extracting airing day: {e}")
@@ -65,7 +72,9 @@ def extract_airing_time(airing_time):
     if airing_time:
         try:
             airing_datetime = datetime.strptime(airing_time, "%Y-%m-%dT%H:%M:%SZ")
-            airing_day = airing_datetime.strftime("%H")  # Get full weekday name (e.g., "01, 23")
+            airing_day = airing_datetime.strftime(
+                "%H"
+            )  # Get full weekday name (e.g., "01, 23")
             return airing_day
         except ValueError as e:
             print(f"Error extracting airing time: {e}")
@@ -82,12 +91,16 @@ def get_season_data(series):
 
     # Find the most recent season based on season number
     current_season = max(season_data, key=lambda x: x["seasonNumber"])
-    print(f"Found current season for {series['title']}: Season {current_season['seasonNumber']}")
+    print(
+        f"Found current season for {series['title']}: Season {current_season['seasonNumber']}"
+    )
 
     # Extract episode statistics from the season
     statistics = current_season.get("statistics", {})
     total_episodes = statistics.get("episodeCount", 0)  # Default to 0 if not found
-    print(f"Total episodes for {series['title']} Season {current_season['seasonNumber']}: {total_episodes}")
+    print(
+        f"Total episodes for {series['title']} Season {current_season['seasonNumber']}: {total_episodes}"
+    )
 
     return [current_season]  # Returning the most recent season data
 
@@ -96,44 +109,93 @@ def update_csv():
     """Fetches series data and writes it to a CSV file."""
     series_list = get_series_data()  # Fetch the series data from Sonarr
 
-    with open(CSV_FILE_PATH, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['Title', 'Sort Title', 'Year', 'Current Season', 'Latest Season Count',
-                      'File Count', 'Last Aired', 'Next Airing', 'Next Airing Time',
-                      'Previous Airing', 'Previous Airing Time', 'Status', 'Episode Count',
-                      'Path', 'IMDB ID', 'titleSlug']
+    with open(CSV_FILE_PATH, "w", newline="", encoding="utf-8") as csvfile:
+        fieldnames = [
+            "imdbId",
+            "tmdbId",
+            "Title",
+            "Sort Title",
+            "Year",
+            "Current Season",
+            "Latest Season Count",
+            "File Count",
+            "Last Aired",
+            "Next Airing",
+            "Next Airing Time",
+            "Previous Airing",
+            "Previous Airing Time",
+            "Status",
+            "Episode Count",
+            "Path",
+            "IMDB ID",
+            "titleSlug",
+        ]
         writer = csv.writer(csvfile)
         writer.writerow(fieldnames)  # Write CSV header
 
         for series in series_list:
+            imdb_id = series.get("imdbId", "")  # Extract imdb id
+            tmdb_id = series.get("tmdbId", "")
             title = series["title"]  # Extract series title
             sort_title = series["sortTitle"]  # Extract sort title
             year = series["year"]  # Extract series release year
             status = series["status"]  # Extract series status (continuing, ended, etc.)
             path = series["path"]  # Extract series status (continuing, ended, etc.)
-            imdb_id = series.get("imdbId", "")  # Extract imdb id
             title_slug = series["titleSlug"]  # Extract title slug
             last_aired = series.get("lastAired")  # Use .get() to safely access the key
-            next_airing = series.get("nextAiring")  # Use .get() to safely access the key
-            previous_airing = series.get("previousAiring")  # Use .get() to safely access the key
+            next_airing = series.get(
+                "nextAiring"
+            )  # Use .get() to safely access the key
+            previous_airing = series.get(
+                "previousAiring"
+            )  # Use .get() to safely access the key
 
-            aired_last = extract_airing_day(last_aired)  # Extract the airing day if available
-            next_airing_time = extract_airing_time(next_airing)  # Extract the airing day if available
-            previous_airing_time = extract_airing_time(previous_airing)  # Extract the airing day if available
+            aired_last = extract_airing_day(
+                last_aired
+            )  # Extract the airing day if available
+            next_airing_time = extract_airing_time(
+                next_airing
+            )  # Extract the airing day if available
+            previous_airing_time = extract_airing_time(
+                previous_airing
+            )  # Extract the airing day if available
 
-            # Get the latest season data
-            latest_season = series["seasons"][-1]  # Get last item in the seasons list
-            latest_season_count = latest_season["statistics"]["totalEpisodeCount"]  # Get episode count
-            episode_count = latest_season["statistics"]["episodeCount"]  # Get episode count
-            file_count = latest_season["statistics"]["episodeFileCount"]  # Get file count
-            current_season = series["statistics"]["seasonCount"]  # Get total season count
+            # Get the latest season data (handle shows with no seasons)
+            seasons = series.get("seasons") or []
+            if seasons:
+                latest_season = seasons[-1]  # last item
+                latest_stats = latest_season.get("statistics", {}) or {}
+                latest_season_count = latest_stats.get("totalEpisodeCount", 0)
+                episode_count = latest_stats.get("episodeCount", 0)
+                file_count = latest_stats.get("episodeFileCount", 0)
+            else:
+                latest_season_count = 0
+                episode_count = 0
+                file_count = 0
 
+            current_season = (series.get("statistics") or {}).get("seasonCount", 0)
 
             # Write the extracted data to the CSV file
             writer.writerow(
                 [
-                    title, sort_title, year, current_season, latest_season_count, file_count, aired_last,
-                    next_airing, next_airing_time, previous_airing, previous_airing_time, status, episode_count,
-                    path, imdb_id, title_slug
+                    imdb_id,
+                    tmdb_id,
+                    title,
+                    sort_title,
+                    year,
+                    current_season,
+                    latest_season_count,
+                    file_count,
+                    aired_last,
+                    next_airing,
+                    next_airing_time,
+                    previous_airing,
+                    previous_airing_time,
+                    status,
+                    episode_count,
+                    path,
+                    imdb_id,
+                    title_slug,
                 ]
             )
 

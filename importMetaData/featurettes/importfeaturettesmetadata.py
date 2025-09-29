@@ -168,8 +168,8 @@ try:
         "Sub Titles",
         "Chapters",
     ]
-    EXCLUDE_KEYWORDS = ["featurette", "trailer", "sample", "behind the scenes"]
-    EXCLUDE_DIR_KEYWORDS = ["Featurettes", "trailer", "sample", "behind the scenes"]
+    EXCLUDE_KEYWORDS = []
+    EXCLUDE_DIR_KEYWORDS = []
     parent_imdb_cache = {}
 
     # ---------------------------
