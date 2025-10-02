@@ -43,7 +43,7 @@ M_ROOT = r"M:\Movies"
 
 # TEST directory (your current scenario)
 # UNC_ROOT = r"\\192.168.1.205\Media\M-movie-Test-Dir-1"
-# M_ROOT   = r"M:\M-movie-Test-Dir-1"
+# M_ROOT = r"M:\M-movie-Test-Dir-1"
 
 
 def to_m_drive(p: str) -> str:
@@ -341,6 +341,7 @@ try:
                         "Format_Level",
                         "HDR_Format_Compatibility",
                         "CodecID",
+                        "Duration",
                         "BitRate",
                         "Width",
                         "Height",

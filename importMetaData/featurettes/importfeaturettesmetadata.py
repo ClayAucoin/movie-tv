@@ -1,5 +1,5 @@
 """
-python "C:/Users/Administrator/projects/movie-tv/importMetaData/importfeaturettesmetadata.py"
+python "C:/Users/Administrator/projects/movie-tv/importMetaData/featurettes/importfeaturettesmetadata.py"
 
     TARGET_DIR = r"M:/Movie Test Dir 1/"
     TARGET_DIR = r"M:/Movies/"
