@@ -5,8 +5,8 @@ Set objShell = CreateObject("WScript.Shell")
 ' run the scripts without the task scheduler flag
 objShell.Run """pythonw.exe"" ""C:\Users\Administrator\projects\movie-tv\arr\Radarr\updateRadarrData.py""", 0, False
 objShell.Run """pythonw.exe"" ""C:\Users\Administrator\projects\movie-tv\arr\Sonarr\updateSonarrData.py""", 0, False
-objShell.Run """pythonw.exe"" ""C:\Users\Administrator\projects\movie-tv\importMetaData\featurettesDirCheck.py""", 0, False
-objShell.Run """pythonw.exe"" ""C:\Users\Administrator\projects\movie-tv\importMetaData\importmetadata.py""", 0, False
+objShell.Run """pythonw.exe"" ""C:\Users\Administrator\projects\movie-tv\importMetaData\featurettes\featurettesDirCheck.py""", 0, False
+objShell.Run """pythonw.exe"" ""C:\Users\Administrator\projects\movie-tv\importMetaData\movies\importmetadata.py""", 0, False
 
 Set objShell = Nothing
 

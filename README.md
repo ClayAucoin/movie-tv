@@ -4,7 +4,7 @@ A practical, end-to-end guide to the scripts in this repo: what they do, how to 
 
 > **Who this is for**: This repo is designed for a local media setup that exports metadata from your library, keeps Radarr/Sonarr data fresh, and mirrors the results into Sheets for dashboards and audits.
 
-----
+---
 
 ## Table of Contents
 
@@ -35,6 +35,7 @@ A practical, end-to-end guide to the scripts in this repo: what they do, how to 
 These scripts work together to extract rich metadata from local media, validate directory structure, update Radarr and Sonarr datasets, and export clean CSVs for analysis in Google Sheets.
 
 **Outputs include**:
+
 - CSV exports for Movies and TV Shows (from Radarr/Sonarr)
 - Media metadata CSV/JSON for your local library
 - Log files and a cache JSON to skip unchanged files
@@ -74,6 +75,7 @@ charset-normalizer
 ```
 
 If you use Windows toast notifications in some scripts, you may also see:
+
 ```
 pywin32
 win10toast
@@ -116,12 +118,14 @@ Most scripts also accept CLI flags for overrides. See each section below.
 **Purpose**: Walk your media library, extract technical and descriptive metadata per file using MediaInfo, and export to CSV (and optionally JSON). Caches previous results to skip unchanged files. Handles rename and deletion detection.
 
 **Typical outputs**:
+
 - `media_metadata.csv`
 - `media_metadata.json` (optional)
 - `cache.json` for change detection
 - `run_timing.csv` (optional timing per file)
 
 **Key flags**:
+
 ```
 --root "D:\Media"               # library root to scan
 --out "D:\Exports\media-metadata\media_metadata.csv"
@@ -134,6 +138,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 ```
 
 **Notes**:
+
 - Deletion detection removes rows for files that no longer exist.
 - Rename detection updates existing rows without duplicating.
 - If you see "CSV not removing deleted rows," ensure the script writes the filtered DataFrame back to the same CSV and uses a stable unique key (full path + size + mtime or a hash).
@@ -146,6 +151,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 **Purpose**: Verify required directory structure exists (e.g., specific folders under each movie or TV show), create missing directories if requested, and report anomalies.
 
 **Typical flags**:
+
 ```
 --root "D:\Media\Movies"
 --expect "Featurettes,Subtitles,Extras"
@@ -154,6 +160,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 ```
 
 **What it checks**:
+
 - Presence of expected subfolders
 - Empty folders
 - Unexpected extra folders (if you pass a strict flag)
@@ -167,6 +174,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 **Purpose**: Query Radarr API, export movie library to CSV, and optionally normalize fields for Sheets.
 
 **Typical flags**:
+
 ```
 --url http://127.0.0.1:7878
 --api-key <key>
@@ -176,6 +184,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 ```
 
 **Notes**:
+
 - Respects `.env` values if flags are omitted.
 - If rate limits or timeouts occur, increase retry/backoff in the code if available.
 
@@ -187,6 +196,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 **Purpose**: Query Sonarr API, export series and episodes to CSV. Optionally split series.csv and episodes.csv.
 
 **Typical flags**:
+
 ```
 --url http://127.0.0.1:8989
 --api-key <key>
@@ -205,6 +215,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 **Purpose**: Dump full MediaInfo for a specific file or a folder to CSV or JSON. Useful for spot checks and for designing your column selections.
 
 **Typical flags**:
+
 ```
 --input "D:\Media\Movies\Some.Movie.2019\Some.Movie.2019.mkv"
 --out "D:\Exports\debug\mediainfo_dump.json"
@@ -213,6 +224,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 ```
 
 **Backends**:
+
 - `pymediainfo` Python binding
 - Or shell out to `mediainfo` CLI if preferred
 
@@ -224,6 +236,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 **Purpose**: Query a sample of Radarr items and output a flattened list of keys as a CSV. Lets you pick stable columns for your main export.
 
 **Typical flags**:
+
 ```
 --url http://127.0.0.1:7878
 --api-key <key>
@@ -239,6 +252,7 @@ Most scripts also accept CLI flags for overrides. See each section below.
 **Purpose**: Same as above but for Sonarr series and episodes.
 
 **Typical flags**:
+
 ```
 --url http://127.0.0.1:8989
 --api-key <key>
@@ -335,19 +349,25 @@ You can configure everything in the GUI or via `schtasks`. Here are both.
 ### Quick GUI steps
 
 1. Open **Task Scheduler** → **Create Task…** (not Basic).
-2. **General** tab  
-   - Name: `Import Media Metadata`  
-   - Run whether user is logged on or not  
+2. **General** tab
+   - Name:
+     - Metadata: `_movies - Update metadata - movies and feats`
+     - Radarr & Sonarr: `_movies - Update metadata - movies and feats`
+   - Run whether user is logged on or not
    - Configure for: Windows 10 or later
-3. **Triggers** tab → **New…**  
-   - Daily at 2:00 AM (example)  
+3. **Triggers** tab → **New…**
+   - One time: Start 1:00:00
+   - Daily at 2:00 AM (example)
+   - Repeat task every: 5 minutes
    - Enabled
-4. **Actions** tab → **New…**  
-   - **Program/script**: `C:\Path\to\repo\.venv\Scripts\pythonw.exe`  
-   - **Add arguments**: `C:\Path\to\repo\importMetaData\importmetadata.py --task_scheduler`  
+4. **Actions** tab → **New…**
+   - **Program/script**: `C:\Path\to\repo\.venv\Scripts\pythonw.exe`
+   - **Add arguments**: `C:\Path\to\repo\importMetaData\importmetadata.py --task_scheduler`
    - **Start in**: `C:\Path\to\repo`
 5. **Conditions** tab: Uncheck "Start the task only if the computer is on AC power" if needed.
-6. **Settings** tab: Allow task to be run on demand. Stop if runs longer than X hours if you want a safeguard.
+6. **Settings** tab:
+   - Allow task to be run on demand. Stop if runs longer than X hours if you want a safeguard.
+   - Run task as soon as possible agter a scheduled start is missed
 7. Save. Enter your credentials when prompted.
 
 Repeat for **Update Radarr** and **Update Sonarr** with their respective python files and arguments.
@@ -395,35 +415,38 @@ These scripts import the CSVs hosted on Google Drive into specific Sheets only w
 ```javascript
 // === Config ===
 const FILE_IDS = {
-  radarrMovies: { fileId: 'YOUR_DRIVE_FILE_ID_1', sheetName: 'Radarr Movies' },
-  sonarrSeries: { fileId: 'YOUR_DRIVE_FILE_ID_2', sheetName: 'Sonarr Series' },
-  sonarrEpisodes: { fileId: 'YOUR_DRIVE_FILE_ID_3', sheetName: 'Sonarr Episodes' },
-  mediaMetadata: { fileId: 'YOUR_DRIVE_FILE_ID_4', sheetName: 'Media Metadata' },
+  radarrMovies: { fileId: "YOUR_DRIVE_FILE_ID_1", sheetName: "Radarr Movies" },
+  sonarrSeries: { fileId: "YOUR_DRIVE_FILE_ID_2", sheetName: "Sonarr Series" },
+  sonarrEpisodes: {
+    fileId: "YOUR_DRIVE_FILE_ID_3",
+    sheetName: "Sonarr Episodes",
+  },
+  mediaMetadata: {
+    fileId: "YOUR_DRIVE_FILE_ID_4",
+    sheetName: "Media Metadata",
+  },
 };
 
-const PROP_LAST_IMPORT_PREFIX = 'lastImport__'; // per fileId
-const LOG_SHEET = 'Logs';
+const PROP_LAST_IMPORT_PREFIX = "lastImport__"; // per fileId
+const LOG_SHEET = "Logs";
 
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
-  ui.createMenu('Media Data')
-    .addItem('Import All Now', 'importAllNow')
+  ui.createMenu("Media Data")
+    .addItem("Import All Now", "importAllNow")
     .addSeparator()
-    .addItem('Import Radarr Movies', 'importRadarrMovies')
-    .addItem('Import Sonarr Series', 'importSonarrSeries')
-    .addItem('Import Sonarr Episodes', 'importSonarrEpisodes')
-    .addItem('Import Media Metadata', 'importMediaMetadata')
+    .addItem("Import Radarr Movies", "importRadarrMovies")
+    .addItem("Import Sonarr Series", "importSonarrSeries")
+    .addItem("Import Sonarr Episodes", "importSonarrEpisodes")
+    .addItem("Import Media Metadata", "importMediaMetadata")
     .addToUi();
 }
 
 function setupTriggers() {
   // Clear old triggers
-  ScriptApp.getProjectTriggers().forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.getProjectTriggers().forEach((t) => ScriptApp.deleteTrigger(t));
   // Every 15 minutes
-  ScriptApp.newTrigger('scheduledImport')
-    .timeBased()
-    .everyMinutes(15)
-    .create();
+  ScriptApp.newTrigger("scheduledImport").timeBased().everyMinutes(15).create();
 }
 
 function scheduledImport() {
@@ -440,10 +463,18 @@ function importAllNow() {
   importCSVIntoSheet(FILE_IDS.mediaMetadata);
 }
 
-function importRadarrMovies()    { importCSVIntoSheet(FILE_IDS.radarrMovies); }
-function importSonarrSeries()    { importCSVIntoSheet(FILE_IDS.sonarrSeries); }
-function importSonarrEpisodes()  { importCSVIntoSheet(FILE_IDS.sonarrEpisodes); }
-function importMediaMetadata()   { importCSVIntoSheet(FILE_IDS.mediaMetadata); }
+function importRadarrMovies() {
+  importCSVIntoSheet(FILE_IDS.radarrMovies);
+}
+function importSonarrSeries() {
+  importCSVIntoSheet(FILE_IDS.sonarrSeries);
+}
+function importSonarrEpisodes() {
+  importCSVIntoSheet(FILE_IDS.sonarrEpisodes);
+}
+function importMediaMetadata() {
+  importCSVIntoSheet(FILE_IDS.mediaMetadata);
+}
 
 function importIfChanged(entry) {
   const file = DriveApp.getFileById(entry.fileId);
@@ -471,7 +502,9 @@ function importCSVIntoSheet(entry) {
     sh.getRange(1, 1, csv.length, csv[0].length).setValues(csv);
   }
 
-  logRun(`Imported "${entry.sheetName}" from file ${entry.fileId} with ${csv.length} rows.`);
+  logRun(
+    `Imported "${entry.sheetName}" from file ${entry.fileId} with ${csv.length} rows.`
+  );
 }
 
 function logRun(msg) {
@@ -480,7 +513,7 @@ function logRun(msg) {
   if (!sh) {
     sh = ss.insertSheet(LOG_SHEET);
     sh.hideSheet();
-    sh.appendRow(['Timestamp', 'Message']);
+    sh.appendRow(["Timestamp", "Message"]);
   }
   sh.appendRow([new Date(), msg]);
 }
