@@ -42,8 +42,8 @@ UNC_ROOT = r"\\192.168.1.205\Media\Movies"
 M_ROOT = r"M:\Movies"
 
 # TEST directory (your current scenario)
-# UNC_ROOT = r"\\192.168.1.205\Media\L-Test-Dir"
-# M_ROOT = r"M:\L-Test-Dir"
+# UNC_ROOT = r"\\192.168.1.205\Media\M-movie-Test-Dir-1"
+# M_ROOT = r"M:\M-movie-Test-Dir-1"
 
 
 def to_m_drive(p: str) -> str:
@@ -298,9 +298,7 @@ try:
     # ---------------------------
     # Extraction helpers
     # ---------------------------
-    def extract_metadata_cli(
-        path_abs, rel_key_norm, stat, start_time, parent_imdb_current
-    ):
+    def extract_metadata_cli(path_abs, rel_key_norm, stat, start_time):
         try:
             result = subprocess.run(
                 [MEDIAINFO, "--Output=JSON", path_abs],
@@ -513,12 +511,12 @@ try:
                 ]
             )
 
-            # --- NEW: always sync IMDB to the parent movie for Featurettes ---
+            # If this file is in a Featurettes folder and IMDB is missing, inherit from the parent directory
             dirpath = os.path.dirname(path_abs)
-            if "featurettes" in dirpath.lower():
-                # if row["IMDB ID"] missing OR differs, force to parent_imdb_current
-                if parent_imdb_current:
-                    row["IMDB ID"] = parent_imdb_current
+            if "featurettes" in dirpath.lower() and not row["IMDB ID"]:
+                inherited = imdb_from_parent_dir(dirpath)
+                if inherited:
+                    row["IMDB ID"] = inherited
 
             return rel_key_norm, row, time.time() - start_time
 
@@ -535,10 +533,6 @@ try:
         # Process only directories whose path contains "featurettes" (case-insensitive)
         if "featurettes" not in root.lower():
             continue
-
-        # Compute parent IMDB once per featurettes folder
-        parent_imdb_current = imdb_from_parent_dir(root)
-
         for fname in files:
             if not fname.lower().endswith(VIDEO_EXTS):
                 continue
@@ -559,23 +553,9 @@ try:
                 continue
 
             sig = {"size": stat.st_size, "mtime": stat.st_mtime}
-            cached = file_cache.get(rel_key_norm)
-
-            # --- NEW: force update if parent IMDB changed, even if size/mtime same ---
-            imdb_changed = False
-            if cached and "imdb" in cached:
-                if (cached.get("imdb") or "") != (parent_imdb_current or ""):
-                    imdb_changed = True
-
-            if (
-                cached
-                and cached.get("size") == sig["size"]
-                and cached.get("mtime") == sig["mtime"]
-                and not imdb_changed
-            ):
-                continue  # unchanged and imdb same -> skip
-
-            files_to_process.append((path_abs, rel_key_norm, stat, parent_imdb_current))
+            if rel_key_norm in file_cache and file_cache[rel_key_norm] == sig:
+                continue  # unchanged
+            files_to_process.append((path_abs, rel_key_norm, stat))
 
     log(f"Scanned media files seen (by extension): {scanned_media}")
     log(f"Discovered {len(files_to_process)} files to process in: {WALK_ROOT}")
@@ -597,11 +577,11 @@ try:
         max_workers = min(8, max(1, os.cpu_count() or 4))
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {
-                executor.submit(extract_metadata_cli, p, rkey, s, time.time(), pid): (
+                executor.submit(extract_metadata_cli, p, rkey, s, time.time()): (
                     p,
                     rkey,
                 )
-                for p, rkey, s, pid in files_to_process
+                for p, rkey, s in files_to_process
             }
             for i, future in enumerate(concurrent.futures.as_completed(futures), 1):
                 rel_key_norm, row, duration = future.result()
@@ -610,8 +590,6 @@ try:
                     file_cache[rel_key_norm] = {
                         "size": row["Size Bytes"],
                         "mtime": row["Modified Time"],
-                        # --- NEW: store imdb in cache so we can detect future changes ---
-                        "imdb": row.get("IMDB ID", "") or "",
                     }
                     total_elapsed = time.time() - start_time
                     time_writer.writerow(

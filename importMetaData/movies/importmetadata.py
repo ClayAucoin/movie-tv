@@ -165,6 +165,7 @@ try:
         "Audio Tracks JSON",
         "Sub Titles",
         "Chapters",
+        "Duration",
     ]
     EXCLUDE_KEYWORDS = ["featurette", "trailer", "sample", "behind the scenes"]
     EXCLUDE_DIR_KEYWORDS = ["Featurettes", "trailer", "sample", "behind the scenes"]
@@ -277,6 +278,7 @@ try:
                 "Size KiB": round(stat.st_size / 1024, 2),
                 "Size GiB": round(stat.st_size / (1024**3), 4),
                 "File Type": os.path.splitext(path_abs)[1].lstrip("."),
+                # "Duration": "",
                 "Movie BR": "",
                 "Audio BR": "",
                 "Audio Channels": "",
@@ -319,6 +321,7 @@ try:
                     row["IMDB ID"] = track.get(
                         "InternetMovieDatabase", ""
                     ) or extra.get("IMDB_ID", "")
+                    # row["Duration"] = track.get("Duration", "")
 
                     # Chapters (Menu.extra)
                     for t in tracks:
