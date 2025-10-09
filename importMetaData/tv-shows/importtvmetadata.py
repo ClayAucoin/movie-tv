@@ -195,7 +195,7 @@ try:
             "e.g., C:\\Tools\\MediaInfo\\mediainfo.exe"
         )
         log(msg)
-        notify("Metadata Script", msg)
+        notify("TV Show Metadata Script", msg)
         raise
 
     # ---------------------------
@@ -602,7 +602,7 @@ try:
 
     summary = f"Finished in {int(total_time)}s — {len(updated_rows)} updated, {len(file_cache)} total"
     log("✅ " + summary)
-    notify("Metadata Script", f"✅ Script completed successfully.\n\n{summary}")
+    notify("TV Show Metadata Script", f"✅ Script completed successfully.\n\n{summary}")
 
 finally:
     try:
