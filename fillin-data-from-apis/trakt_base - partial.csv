@@ -1,0 +1,11 @@
+collected_at,type,title,year,trakt_rating,trakt_id,imdb_id,tmdb_id,url,released,runtime,genres
+2022-05-31T12:40:51Z,movie,The Matrix,1999,8.73296,481,tt0133093,603,https://trakt.tv/movies/the-matrix-1999,1999-03-31,136,"action,science-fiction"
+2022-05-31T12:41:08Z,movie,The Matrix Reloaded,2003,7.52699,482,tt0234215,604,https://trakt.tv/movies/the-matrix-reloaded-2003,2003-05-15,138,"action,adventure,science-fiction,thriller"
+2022-05-31T12:41:23Z,movie,The Matrix Resurrections,2021,6.09208,466465,tt10838180,624860,https://trakt.tv/movies/the-matrix-resurrections-2021,2021-12-22,147,"action,science-fiction,adventure"
+2022-05-31T12:41:14Z,movie,The Matrix Revolutions,2003,7.15563,483,tt0242653,605,https://trakt.tv/movies/the-matrix-revolutions-2003,2003-11-05,129,"action,adventure,science-fiction,thriller"
+2023-05-06T16:14:17Z,movie,The Lord of the Rings: The Fellowship of the Ring,2001,8.75329,88,tt0120737,120,https://trakt.tv/movies/the-lord-of-the-rings-the-fellowship-of-the-ring-2001,2001-12-19,179,"action,adventure,fantasy"
+2023-05-06T16:15:25Z,movie,The Lord of the Rings: The Return of the King,2003,8.88362,90,tt0167260,122,https://trakt.tv/movies/the-lord-of-the-rings-the-return-of-the-king-2003,2003-12-17,201,"action,adventure,fantasy"
+2023-05-06T16:14:05Z,movie,The Lord of the Rings: The Two Towers,2002,8.75472,89,tt0167261,121,https://trakt.tv/movies/the-lord-of-the-rings-the-two-towers-2002,2002-12-18,179,"action,adventure,fantasy"
+2023-05-07T07:58:59Z,movie,The Hobbit: An Unexpected Journey,2012,7.83032,34097,tt0903624,49051,https://trakt.tv/movies/the-hobbit-an-unexpected-journey-2012,2012-12-14,169,"action,adventure,fantasy"
+2023-05-07T07:59:12Z,movie,The Hobbit: The Battle of the Five Armies,2014,7.57417,84900,tt2310332,122917,https://trakt.tv/movies/the-hobbit-the-battle-of-the-five-armies-2014,2014-12-17,144,"adventure,fantasy,action"
+2023-01-16T17:16:55Z,movie,The Hobbit: The Desolation of Smaug,2013,7.79374,40808,tt1170358,57158,https://trakt.tv/movies/the-hobbit-the-desolation-of-smaug-2013,2013-12-13,161,"fantasy,adventure,action"
