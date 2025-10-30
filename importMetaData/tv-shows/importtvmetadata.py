@@ -143,6 +143,7 @@ try:
     # ---------------------------
     VIDEO_EXTS = (".mp4", ".mkv", ".avi", ".mov", ".flv", ".m4v", ".m2ts", ".ts")
     FIELDS = [
+        "IMDB ID",
         "Name of file",
         "Path of file",
         "Size Bytes",
@@ -158,7 +159,6 @@ try:
         "Genre",
         "Edition",
         "Director",
-        "IMDB ID",
         "Modified Time",
         "Video Track Titles",
         "Audio Track Titles",
@@ -166,9 +166,16 @@ try:
         "Audio Tracks JSON",
         "Sub Titles",
         "Chapters",
+        "Duration",
     ]
     EXCLUDE_KEYWORDS = ["featurette", "trailer", "sample", "behind the scenes"]
-    EXCLUDE_DIR_KEYWORDS = ["Featurettes", "trailer", "sample", "behind the scenes"]
+    EXCLUDE_DIR_KEYWORDS = [
+        "__tutorials",
+        "Featurettes",
+        "trailer",
+        "sample",
+        "behind the scenes",
+    ]
 
     # ---------------------------
     # Locate mediainfo
@@ -270,6 +277,7 @@ try:
             tracks = data.get("media", {}).get("track", [])
 
             row = {
+                "IMDB ID": "",
                 "Name of file": os.path.basename(path_abs),
                 "Path of file": to_m_drive(
                     os.path.dirname(path_abs)
@@ -287,7 +295,6 @@ try:
                 "Genre": "",
                 "Edition": "",
                 "Director": "",
-                "IMDB ID": "",
                 "Modified Time": float(stat.st_mtime),
                 "Video Track Titles": "",
                 "Audio Track Titles": "",
@@ -295,6 +302,7 @@ try:
                 "Audio Tracks JSON": "",
                 "Sub Titles": "",
                 "Chapters": "",
+                "Duration": "",
             }
 
             video_tracks, audio_tracks, text_tracks = [], [], []
@@ -305,6 +313,7 @@ try:
                 ttype = track.get("@type")
 
                 if ttype == "General":
+                    # Movie-level metadata
                     row["Movie Name"] = track.get("Movie", "") or track.get("Title", "")
                     extra = track.get("extra", {})
                     row["Collection"] = track.get("Law rating", "") or extra.get(
@@ -333,6 +342,7 @@ try:
                                 row["Chapters"] = ""
 
                 elif ttype == "Video":
+                    row["Duration"] = track.get("Duration", "")
                     subset = {}
                     for k in (
                         "@type",

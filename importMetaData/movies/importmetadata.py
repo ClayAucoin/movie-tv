@@ -142,6 +142,7 @@ try:
     # ---------------------------
     VIDEO_EXTS = (".mp4", ".mkv", ".avi", ".mov", ".flv", ".m4v", ".m2ts", ".ts")
     FIELDS = [
+        "IMDB ID",
         "Name of file",
         "Path of file",
         "Size Bytes",
@@ -157,7 +158,6 @@ try:
         "Genre",
         "Edition",
         "Director",
-        "IMDB ID",
         "Modified Time",
         "Video Track Titles",
         "Audio Track Titles",
@@ -296,6 +296,7 @@ try:
                 "Audio Tracks JSON": "",
                 "Sub Titles": "",
                 "Chapters": "",
+                "Duration": "",
             }
 
             video_tracks, audio_tracks, text_tracks = [], [], []
@@ -321,7 +322,6 @@ try:
                     row["IMDB ID"] = track.get(
                         "InternetMovieDatabase", ""
                     ) or extra.get("IMDB_ID", "")
-                    # row["Duration"] = track.get("Duration", "")
 
                     # Chapters (Menu.extra)
                     for t in tracks:
@@ -335,6 +335,7 @@ try:
                                 row["Chapters"] = ""
 
                 elif ttype == "Video":
+                    row["Duration"] = track.get("Duration", "")
                     subset = {}
                     for k in (
                         "@type",

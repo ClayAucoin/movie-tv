@@ -1,4 +1,4 @@
-# C:\Users\Administrator\projects\movie-tv\fillin-data-from-apis\pull-from-tmdb.py
+# python "C:\Users\Administrator\projects\movie-tv\fillin-data-from-apis\pull-from-tmdb.py"
 
 
 import csv
@@ -12,8 +12,8 @@ from typing import Tuple, Optional
 
 
 # ==== CONFIG ====
-INPUT_CSV = "trakt_base.csv"
-OUTPUT_CSV = "movies_enriched.csv"
+INPUT_CSV = "E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m.csv"
+OUTPUT_CSV = "E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/movies_on_m_enriched.csv"
 
 TMDB_KEY = os.getenv("TMDB_KEY") or "233469629197eedb0360cdcc44c77703"
 TMDB_IMG_BASE = (
@@ -27,7 +27,7 @@ WD_HEADERS = {
 }
 WD_TIMEOUT = 30
 
-REQUIRED_COLS = {"imdb_id"}  # tmdb_id is optional now
+REQUIRED_COLS = {"IMDB ID"}  # tmdb_id is optional now
 
 
 CURRENCY_LABEL_TO_CODE = {
@@ -360,11 +360,11 @@ def main():
             total += 1
             title = row.get("title") or ""
             year = row.get("year") or ""
-            imdb_id = (row.get("imdb_id") or "").strip()
+            imdb_id = (row.get("IMDB ID") or "").strip()
             tmdb_id = (row.get("tmdb_id") or "").strip()
 
             if not imdb_id:
-                log(f"[{total}] Skipping (no imdb_id): {title} ({year})")
+                log(f"[{total}] Skipping (no IMDB ID): {title} ({year})")
                 writer.writerow(row)  # write the base row to keep alignment
                 continue
 
