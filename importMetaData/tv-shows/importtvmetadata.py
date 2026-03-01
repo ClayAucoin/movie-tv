@@ -110,7 +110,7 @@ try:
     # Paths
     # ---------------------------
     if platform.system() == "Windows":
-        OUTPUT_CSV = r"E:/My Drive/__clay0aucoin@gmail.com/movies_on_m/tvshows_on_m.csv"
+        OUTPUT_CSV = r"G:/My Drive/__clay0aucoin@gmail.com/movies_on_m/tvshows_on_m.csv"
 
         # Preferred walk root: mapped drive when available, else UNC
         M_LETTER = M_ROOT

@@ -7,13 +7,14 @@ from datetime import datetime
 import platform
 import ctypes
 
-import os, sys
+import os
+import sys
 
 PROJECT_ROOT = os.path.dirname(
     os.path.dirname(os.path.dirname(__file__))
 )  # .../movie-tv
 sys.path.append(PROJECT_ROOT)
-from arr.config.config import SONARR_URL, SONARR_API_KEY, SONARR_API_URL
+from arr.config.config import SONARR_URL, SONARR_API_KEY, SONARR_API_URL  # noqa: E402, F401
 
 # Check if the script is running with the "/task_scheduler" argument
 is_task_scheduler = "/task_scheduler" in sys.argv
