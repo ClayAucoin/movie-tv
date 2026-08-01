@@ -5,6 +5,7 @@ A practical, end-to-end guide to the scripts in this repo: what they do, how to 
 > **Who this is for**: This repo is designed for a local media setup that exports metadata from your library, keeps Radarr/Sonarr data fresh, and mirrors the results into Sheets for dashboards and audits.
 
 ---
+---
 
 
 
